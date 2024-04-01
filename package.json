@@ -1,0 +1,47 @@
+{
+  "type": "module",
+  "name": "@btc-vision/motoswapcommon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/index.js",
+  "scripts": {
+    "watch": "gulp watch",
+    "start": "cd build && node index",
+    "build": "gulp",
+    "test": "jest",
+    "setup": "npm npm i && npm run build"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.12.2",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.3",
+    "typescript-eslint": "^7.4.0"
+  },
+  "dependencies": {
+    "@types/bignumber.js": "^5.0.0",
+    "@types/cors": "^2.8.17",
+    "@types/debug": "^4.1.12",
+    "@types/jest": "^29.5.12",
+    "@types/mongo-sanitize": "^1.0.3",
+    "babel-plugin-transform-import-meta": "^2.2.1",
+    "bignumber.js": "^9.1.2",
+    "bitcoinjs-lib": "^6.1.5",
+    "chalk": "^5.3.0",
+    "cors": "^2.8.5",
+    "ecpair": "^2.1.0",
+    "gulp": "^4.0.2",
+    "gulp-cached": "^1.1.1",
+    "gulp-logger": "^0.0.2",
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "mongo-sanitize": "^1.1.0",
+    "mongodb": "^6.5.0",
+    "node-cache": "^5.1.2",
+    "supports-color": "^9.4.0",
+    "toml": "^3.0.0",
+    "ts-jest": "^29.1.2",
+    "tiny-secp256k1": "^2.2.3"
+  }
+}
