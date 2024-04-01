@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@btc-vision/motoswapcommon",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "build/index.js",
   "scripts": {
@@ -18,7 +18,8 @@
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
     "typescript": "^5.4.3",
-    "typescript-eslint": "^7.4.0"
+    "typescript-eslint": "^7.4.0",
+	"@btc-vision/motoswapcommon": "1.0.1"
   },
   "dependencies": {
     "@types/bignumber.js": "^5.0.0",
