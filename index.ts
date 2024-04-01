@@ -1,7 +1,7 @@
 import { CacheStrategy } from './src/cache/enums/CacheStrategy.js';
 import { ICacheStrategy } from './src/cache/interfaces/ICacheStrategy.js';
 import { NodeCacheStrategy } from './src/cache/NodeCacheStrategy.js';
-import { MongoCredentials, MONGO_CONNECTION_TYPE } from './src/config/db/credentials/MongoCredentials.js';
+import { MongoCredentials, MONGO_CONNECTION_TYPE, MongoCredentialsDTO } from './src/config/db/credentials/MongoCredentials.js';
 import { BitcoinNetwork } from './src/config/enums/BitcoinNetwork.js';
 import { IConfig } from './src/config/interfaces/IConfig.js';
 import { ConfigBase } from './src/config/ConfigBase.js';
@@ -18,7 +18,7 @@ import { TypeConverter } from './src/utils/TypeConverter.js';
 import { UtilsConfigurations } from './src/utils/UtilsConfigurations.js';
 
 export { CacheStrategy, ICacheStrategy, NodeCacheStrategy } 
-export { MongoCredentials, MONGO_CONNECTION_TYPE, BitcoinNetwork, IConfig, ConfigBase, ConfigManager } 
+export { MongoCredentials, MONGO_CONNECTION_TYPE, MongoCredentialsDTO, BitcoinNetwork, IConfig, ConfigBase, ConfigManager } 
 export { DataAccessErrorType, DataAccessError } 
 export { DebugLevel, ILogger, Logger } 
 export { BitcoinHelper, Globals, TickerHelper, TypeConverter, UtilsConfigurations } 
