@@ -8,11 +8,6 @@ export class NodeCacheStrategy<T> implements ICacheStrategy<T> {
     constructor(maxItems:number = 1024) {
         this.cache = new NodeCache();
         this.maxItems = maxItems;
-
-        this.cache.on("expired", (key, value) => {
-            
-            
-        });
     }
 
     public async get(key: string): Promise<T | undefined> {
