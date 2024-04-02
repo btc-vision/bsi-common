@@ -5,7 +5,7 @@ import {
     MONGO_CONNECTION_TYPE,
     MongoCredentials,
     MongoCredentialsDTO,
-} from './config/db/credentials/MongoCredentials.js';
+} from './db/credentials/MongoCredentials.js';
 import { BitcoinNetwork } from './config/enums/BitcoinNetwork.js';
 import { DataAccessError } from './errors/DataAccessError.js';
 import { DataAccessErrorType } from './errors/enums/DataAccessErrorType.js';

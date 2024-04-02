@@ -1,6 +1,6 @@
 import { CacheStrategy } from '../../cache/enums/CacheStrategy.js';
 import { DebugLevel } from '../../logger/enums/DebugLevel.js';
-import { MONGO_CONNECTION_TYPE } from '../db/credentials/MongoCredentials.js';
+import { MONGO_CONNECTION_TYPE } from '../../db/credentials/MongoCredentials.js';
 import { BitcoinNetwork } from '../enums/BitcoinNetwork.js';
 
 export interface DocsConfig {
