@@ -27,10 +27,6 @@ export interface DataBaseConfig {
     };
 }
 
-export interface IndexerConfig {
-    ENABLED: boolean;
-}
-
 export interface BlockchainConfig {
     BITCOIND_NETWORK: BitcoinNetwork;
     BITCOIND_HOST: string;
@@ -44,13 +40,12 @@ export interface ORDClientConfig {
     ORDCLIENT_URL: string;
 }
 
-export interface IConfig {
+export interface IConfigBase extends IConfigTemplate {
     DOCS: DocsConfig;
     API: APIConfig;
 
     DATABASE: DataBaseConfig;
     BLOCKCHAIN: BlockchainConfig;
-    INDEXER: IndexerConfig;
     ORDCLIENT: ORDClientConfig;
 
     DEBUG_LEVEL: DebugLevel;
@@ -59,3 +54,7 @@ export interface IConfig {
     CACHE_STRATEGY: CacheStrategy;
     LOG_FOLDER: string;
 }
+
+export interface IConfigTemplate { };
+
+export type IConfig<T extends IConfigTemplate> = IConfigBase & T;

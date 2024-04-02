@@ -6,54 +6,12 @@ import { DebugLevel } from '../logger/enums/DebugLevel.js';
 import { Logger } from '../logger/Logger.js';
 import { ConfigBase } from './ConfigBase.js';
 import { BitcoinNetwork } from './enums/BitcoinNetwork.js';
-import { IConfig } from './interfaces/IConfig.js';
+import { IConfig, IConfigBase, IConfigTemplate } from './interfaces/IConfig.js';
 import '../utils/Globals.js';
 
-export class ConfigManager<T extends IConfig> extends Logger {
+export abstract class ConfigManager<T extends IConfigTemplate> extends Logger {
     public readonly logColor: string = '#c71585';
-
-    private readonly config: IConfig = {
-        DOCS: {
-            ENABLED: true,
-            PORT: 7000,
-        },
-        API: {
-            ENABLED: true,
-            PORT: 9001,
-            THREADS: 2,
-        },
-        BLOCKCHAIN: {
-            BITCOIND_HOST: '',
-            BITCOIND_NETWORK: BitcoinNetwork.Unknown,
-            BITCOIND_PORT: 0,
-            BITCOIND_USERNAME: '',
-            BITCOIND_PASSWORD: '',
-        },
-        INDEXER: {
-            ENABLED: true,
-        },
-        DATABASE: {
-            CONNECTION_TYPE: MONGO_CONNECTION_TYPE.TESTNET,
-
-            DATABASE_NAME: '',
-            HOST: '',
-            PORT: 0,
-
-            AUTH: {
-                USERNAME: '',
-                PASSWORD: '',
-            },
-        },
-        ORDCLIENT: {
-            ORDCLIENT_URL: '',
-        },
-
-        DEBUG_LEVEL: DebugLevel.INFO,
-        CACHE_STRATEGY: CacheStrategy.NODE_CACHE,
-        DEBUG_FILEPATH: './debug.log',
-        LOG_FOLDER: '',
-        MRC_DISTRIBUTION_PERIOD: 100,
-    };
+    protected config: IConfig<T> = this.getDefaultConfig();
 
     constructor(fullFileName: string) {
         super();
@@ -61,12 +19,10 @@ export class ConfigManager<T extends IConfig> extends Logger {
         this.loadConfig(fullFileName);
     }
 
-    public getConfigs(): ConfigBase {
-        return new ConfigBase(this.config);
-    }
+    public abstract getConfigs(): ConfigBase<T>;
 
-    protected getDefaultConfig(): IConfig {
-        const config: IConfig = {
+    protected getDefaultConfig(): IConfig<T> {
+        const config: IConfigBase = {
             DOCS: {
                 ENABLED: true,
                 PORT: 7000,
@@ -82,9 +38,6 @@ export class ConfigManager<T extends IConfig> extends Logger {
                 BITCOIND_PORT: 0,
                 BITCOIND_USERNAME: '',
                 BITCOIND_PASSWORD: '',
-            },
-            INDEXER: {
-                ENABLED: true,
             },
             DATABASE: {
                 CONNECTION_TYPE: MONGO_CONNECTION_TYPE.TESTNET,
@@ -109,10 +62,10 @@ export class ConfigManager<T extends IConfig> extends Logger {
             MRC_DISTRIBUTION_PERIOD: 100,
         };
 
-        return config;
+        return config as IConfig<T>;
     }
 
-    protected verifyConfig(parsedConfig: Partial<T>): void {
+    protected verifyConfig(parsedConfig: Partial<IConfig<T>>): void {
         if (parsedConfig.DOCS) {
             if (parsedConfig.DOCS.ENABLED && typeof parsedConfig.DOCS.ENABLED !== 'boolean') {
                 throw new Error(`Oops the property DOCS.ENABLED is not a boolean.`);
@@ -158,12 +111,6 @@ export class ConfigManager<T extends IConfig> extends Logger {
                 if (typeof parsedConfig.DATABASE.AUTH.PASSWORD !== 'string') {
                     throw new Error(`Oops the property DATABASE.AUTH.PASSWORD is not a string.`);
                 }
-            }
-        }
-
-        if (parsedConfig.INDEXER) {
-            if (parsedConfig.INDEXER.ENABLED && typeof parsedConfig.INDEXER.ENABLED !== 'boolean') {
-                throw new Error(`Oops the property INDEXER.ENABLED is not a boolean.`);
             }
         }
 
@@ -253,7 +200,7 @@ export class ConfigManager<T extends IConfig> extends Logger {
         }
     }
 
-    protected parsePartialConfig(parsedConfig: Partial<T>): void {
+    protected parsePartialConfig(parsedConfig: Partial<IConfig<T>>): void {
         this.verifyConfig(parsedConfig);
 
         this.config.DOCS = {
@@ -269,11 +216,6 @@ export class ConfigManager<T extends IConfig> extends Logger {
         this.config.BLOCKCHAIN = {
             ...this.config.BLOCKCHAIN,
             ...parsedConfig.BLOCKCHAIN,
-        };
-
-        this.config.INDEXER = {
-            ...this.config.INDEXER,
-            ...parsedConfig.INDEXER,
         };
 
         this.config.DATABASE = {
@@ -304,7 +246,7 @@ export class ConfigManager<T extends IConfig> extends Logger {
         }
 
         try {
-            const parsedConfig: Partial<T> = toml.parse(config);
+            const parsedConfig: Partial<IConfig<T>> = toml.parse(config);
 
             this.parsePartialConfig(parsedConfig);
         } catch (e: unknown) {

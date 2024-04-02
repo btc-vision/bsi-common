@@ -6,11 +6,12 @@ import {
     DataBaseConfig,
     DocsConfig,
     IConfig,
-    IndexerConfig,
+    IConfigBase,
+    IConfigTemplate,
     ORDClientConfig,
 } from './interfaces/IConfig.js';
 
-export class ConfigBase implements IConfig {
+export abstract class ConfigBase<T extends IConfigTemplate> implements IConfigBase {
     public readonly MRC_DISTRIBUTION_PERIOD: number;
     public readonly DEBUG_FILEPATH: string;
     public readonly CACHE_STRATEGY: CacheStrategy;
@@ -23,10 +24,10 @@ export class ConfigBase implements IConfig {
     public readonly DATABASE: DataBaseConfig;
 
     public readonly BLOCKCHAIN: BlockchainConfig;
-    public readonly INDEXER: IndexerConfig;
+
     public readonly ORDCLIENT: ORDClientConfig;
 
-    constructor(config: IConfig) {
+    constructor(config: IConfig<T>) {
         this.DEBUG_LEVEL = config.DEBUG_LEVEL;
         this.DOCS = config.DOCS;
 
@@ -34,7 +35,6 @@ export class ConfigBase implements IConfig {
         this.DATABASE = config.DATABASE;
 
         this.BLOCKCHAIN = config.BLOCKCHAIN;
-        this.INDEXER = config.INDEXER;
         this.ORDCLIENT = config.ORDCLIENT;
 
         this.MRC_DISTRIBUTION_PERIOD = config.MRC_DISTRIBUTION_PERIOD;
@@ -43,3 +43,4 @@ export class ConfigBase implements IConfig {
         this.LOG_FOLDER = config.LOG_FOLDER;
     }
 }
+
