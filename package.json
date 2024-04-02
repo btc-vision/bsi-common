@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "@btc-vision/motoswapcommon",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "",
   "main": "build/index.js",
   "scripts": {
@@ -9,7 +9,8 @@
     "start": "cd build && node index",
     "build": "gulp",
     "test": "jest --runInBand",
-    "setup": "npm npm i && npm run build"
+    "setup": "npm npm i && npm run build",
+    "install": "gulp"
   },
   "author": "",
   "license": "ISC",
