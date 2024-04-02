@@ -1,4 +1,4 @@
-import { Decimal128, ObjectId } from "mongodb";
+import { Decimal128, ObjectId } from 'mongodb';
 
 export class TypeConverter {
     public static bigintToDecimal128(value: bigint): Decimal128 {

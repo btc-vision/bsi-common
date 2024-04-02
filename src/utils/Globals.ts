@@ -11,7 +11,7 @@ if (!globalThis['__filename'] && !process.env.TS_JEST) {
 }
 
 // @ts-ignore
-BigInt.prototype.toJSON = function () {
+BigInt.prototype.toJSON = function() {
     return this.toString();
 };
 

@@ -55,6 +55,7 @@ export interface IConfigBase extends IConfigTemplate {
     LOG_FOLDER: string;
 }
 
-export interface IConfigTemplate { };
+export interface IConfigTemplate {
+}
 
 export type IConfig<T extends IConfigTemplate> = IConfigBase & T;

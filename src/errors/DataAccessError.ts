@@ -1,4 +1,4 @@
-import { DataAccessErrorType } from "./enums/DataAccessErrorType.js";
+import { DataAccessErrorType } from './enums/DataAccessErrorType.js';
 
 export class DataAccessError extends Error {
     public extra: string;
@@ -6,8 +6,8 @@ export class DataAccessError extends Error {
     public errorType: DataAccessErrorType;
 
     constructor(message: string,
-        errorType: DataAccessErrorType = DataAccessErrorType.Unknown,
-        extra: string = '') {
+                errorType: DataAccessErrorType = DataAccessErrorType.Unknown,
+                extra: string = '') {
         super(message);
         this.name = this.constructor.name;
         this.extra = extra;
