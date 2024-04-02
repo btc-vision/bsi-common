@@ -1,6 +1,6 @@
 import { CacheStrategy } from '../../cache/enums/CacheStrategy.js';
-import { MONGO_CONNECTION_TYPE } from '../../db/credentials/MongoCredentials.js';
 import { DebugLevel } from '../../logger/enums/DebugLevel.js';
+import { MONGO_CONNECTION_TYPE } from '../db/credentials/MongoCredentials.js';
 import { BitcoinNetwork } from '../enums/BitcoinNetwork.js';
 
 export interface DocsConfig {
@@ -55,6 +55,6 @@ export interface IConfigBase extends IConfigTemplate {
     LOG_FOLDER: string;
 }
 
-export interface IConfigTemplate { };
+export interface IConfigTemplate {}
 
 export type IConfig<T extends IConfigTemplate> = IConfigBase & T;

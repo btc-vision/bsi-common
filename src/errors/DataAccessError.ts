@@ -1,13 +1,15 @@
-import { DataAccessErrorType } from "./enums/DataAccessErrorType.js";
+import { DataAccessErrorType } from './enums/DataAccessErrorType.js';
 
 export class DataAccessError extends Error {
     public extra: string;
     public name: string;
     public errorType: DataAccessErrorType;
 
-    constructor(message: string,
+    constructor(
+        message: string,
         errorType: DataAccessErrorType = DataAccessErrorType.Unknown,
-        extra: string = '') {
+        extra: string = '',
+    ) {
         super(message);
         this.name = this.constructor.name;
         this.extra = extra;
@@ -16,7 +18,7 @@ export class DataAccessError extends Error {
         if (typeof Error.captureStackTrace === 'function') {
             Error.captureStackTrace(this, this.constructor);
         } else {
-            this.stack = (new Error(message)).stack;
+            this.stack = new Error(message).stack;
         }
     }
 }
