@@ -1,5 +1,5 @@
-import { ICacheStrategy } from './interfaces/ICacheStrategy.js';
 import NodeCache from 'node-cache';
+import { ICacheStrategy } from './interfaces/ICacheStrategy.js';
 
 export class NodeCacheStrategy<T> implements ICacheStrategy<T> {
     private maxItems: number = 0;

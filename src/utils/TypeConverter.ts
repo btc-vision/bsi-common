@@ -18,10 +18,10 @@ export class TypeConverter {
     }
 
     public static decimal128ToBigintArray(values: Decimal128[]): bigint[] {
-        return values.map(value => TypeConverter.decimal128ToBigint(value));
+        return values.map((value) => TypeConverter.decimal128ToBigint(value));
     }
 
     public static bigintToDecimal128Array(values: bigint[]): Decimal128[] {
-        return values.map(value => TypeConverter.bigintToDecimal128(value));
+        return values.map((value) => TypeConverter.bigintToDecimal128(value));
     }
 }

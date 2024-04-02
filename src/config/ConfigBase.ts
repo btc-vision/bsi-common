@@ -43,4 +43,3 @@ export abstract class ConfigBase<T extends IConfigTemplate> implements IConfigBa
         this.LOG_FOLDER = config.LOG_FOLDER;
     }
 }
-

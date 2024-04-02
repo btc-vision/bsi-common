@@ -5,9 +5,11 @@ export class DataAccessError extends Error {
     public name: string;
     public errorType: DataAccessErrorType;
 
-    constructor(message: string,
-                errorType: DataAccessErrorType = DataAccessErrorType.Unknown,
-                extra: string = '') {
+    constructor(
+        message: string,
+        errorType: DataAccessErrorType = DataAccessErrorType.Unknown,
+        extra: string = '',
+    ) {
         super(message);
         this.name = this.constructor.name;
         this.extra = extra;
@@ -16,7 +18,7 @@ export class DataAccessError extends Error {
         if (typeof Error.captureStackTrace === 'function') {
             Error.captureStackTrace(this, this.constructor);
         } else {
-            this.stack = (new Error(message)).stack;
+            this.stack = new Error(message).stack;
         }
     }
 }
