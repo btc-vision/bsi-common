@@ -1,4 +1,3 @@
 import { Document } from 'mongodb';
 
-export interface IBaseDocument extends Document {
-}
+export interface IBaseDocument extends Document {}

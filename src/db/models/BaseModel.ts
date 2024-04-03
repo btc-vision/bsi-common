@@ -1,8 +1,7 @@
 import { IBaseDocument } from '../documents/interfaces/IBaseDocument';
 
 export abstract class BaseModel {
-    constructor() {
-    }
+    constructor() {}
 
     public abstract toDocument(): Readonly<IBaseDocument>;
 }

@@ -1,10 +1,14 @@
 import { AnyError, ClientSession, Db, MongoClient, ReadPreference } from 'mongodb';
 import { IConfig, IConfigBase } from '../config/interfaces/IConfig.js';
-import { Globals } from '../utils/Globals.js';
-import { MONGO_CONNECTION_TYPE, MongoCredentials, MongoCredentialsDTO } from './credentials/MongoCredentials.js';
-import { InnerDBManager } from './interfaces/IDBManager.js';
 import { DataAccessError } from '../errors/DataAccessError.js';
 import { DataAccessErrorType } from '../errors/enums/DataAccessErrorType.js';
+import { Globals } from '../utils/Globals.js';
+import {
+    MONGO_CONNECTION_TYPE,
+    MongoCredentials,
+    MongoCredentialsDTO,
+} from './credentials/MongoCredentials.js';
+import { InnerDBManager } from './interfaces/IDBManager.js';
 
 Globals.register();
 
@@ -36,20 +40,18 @@ export class ConfigurableDBManager extends InnerDBManager {
         super(config);
     }
 
-    public createNewMongoClient(): [MongoClient, string]  {
+    public createNewMongoClient(): [MongoClient, string] {
         const mongoCredentials = this.#getMongoCredentials();
 
         return [
-            new MongoClient(mongoCredentials.connectionUri,
-                this.mongoOpts), mongoCredentials.databaseName
+            new MongoClient(mongoCredentials.connectionUri, this.mongoOpts),
+            mongoCredentials.databaseName,
         ];
     }
 
-    public async setup(
-        _targetDatabase: string | MONGO_CONNECTION_TYPE
-    ): Promise<boolean> {
+    public async setup(_targetDatabase: string | MONGO_CONNECTION_TYPE): Promise<boolean> {
         if (!_targetDatabase) {
-             _targetDatabase = this.config.DATABASE.CONNECTION_TYPE
+            _targetDatabase = this.config.DATABASE.CONNECTION_TYPE;
         }
 
         if (this.isSetup) return true;
@@ -65,7 +67,7 @@ export class ConfigurableDBManager extends InnerDBManager {
         if (!this.mongo) {
             this.mongo = new MongoClient(this.connectionUri, this.mongoOpts);
         }
-        
+
         return false;
     }
 
@@ -123,9 +125,7 @@ export class ConfigurableDBManager extends InnerDBManager {
 
     public async startSession(): Promise<ClientSession> {
         if (!this.client) {
-            throw new DataAccessError('Client not connected.',
-                DataAccessErrorType.Unknown,
-                '');
+            throw new DataAccessError('Client not connected.', DataAccessErrorType.Unknown, '');
         }
 
         return this.client.startSession();

@@ -2,8 +2,7 @@ export class PagingQueryInfo {
     public pageSize: number;
     public pageNumber: number;
 
-    constructor(pageSize: number,
-        pageNumber: number) {
+    constructor(pageSize: number, pageNumber: number) {
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
     }
@@ -16,11 +15,13 @@ export class PagingQueryResult<T> {
     public results: T[];
     public hasMoreResults: boolean;
 
-    constructor(pageSize: number,
+    constructor(
+        pageSize: number,
         pageNumber: number,
         count: number,
         hasMoreResults: boolean,
-        results: T[]) {
+        results: T[],
+    ) {
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
         this.count = count;
