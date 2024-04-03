@@ -1,8 +1,10 @@
-import { AnyError, Db, MongoClient, ReadPreference } from 'mongodb';
+import { AnyError, ClientSession, Db, MongoClient, ReadPreference } from 'mongodb';
 import { IConfig, IConfigBase } from '../config/interfaces/IConfig.js';
 import { Globals } from '../utils/Globals.js';
 import { MONGO_CONNECTION_TYPE, MongoCredentials, MongoCredentialsDTO } from './credentials/MongoCredentials.js';
 import { InnerDBManager } from './interfaces/IDBManager.js';
+import { DataAccessError } from '../errors/DataAccessError.js';
+import { DataAccessErrorType } from '../errors/enums/DataAccessErrorType.js';
 
 Globals.register();
 
@@ -117,6 +119,16 @@ export class ConfigurableDBManager extends InnerDBManager {
         });
 
         return this.connectionPromise;
+    }
+
+    public async startSession(): Promise<ClientSession> {
+        if (!this.client) {
+            throw new DataAccessError('Client not connected.',
+                DataAccessErrorType.Unknown,
+                '');
+        }
+
+        return this.client.startSession();
     }
 
     #getMongoCredentials() {

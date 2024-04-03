@@ -1,3 +1,4 @@
+import { ClientSession } from 'mongodb';
 import { IConfig, IConfigBase } from '../../config/interfaces/IConfig.js';
 import { Logger } from '../../logger/Logger.js';
 import { MONGO_CONNECTION_TYPE } from '../credentials/MongoCredentials.js';
@@ -6,6 +7,7 @@ export interface IDBManager {
     connect: () => Promise<void>;
     setup: (targetDatabase: string | MONGO_CONNECTION_TYPE) => Promise<boolean>;
     close: () => Promise<void>;
+    startSession: () => Promise<ClientSession>;
 }
 
 export abstract class InnerDBManager extends Logger implements IDBManager {
@@ -21,4 +23,6 @@ export abstract class InnerDBManager extends Logger implements IDBManager {
     public abstract setup(targetDatabase: string | MONGO_CONNECTION_TYPE): Promise<boolean>;
 
     public abstract close(): Promise<void>;
+
+    public abstract startSession(): Promise<ClientSession>;
 }
