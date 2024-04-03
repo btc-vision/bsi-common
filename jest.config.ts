@@ -24,7 +24,7 @@ const config: Config.InitialOptions = {
             },
         ],
     },
-    modulePathIgnorePatterns: ['packages', 'build', 'node_modules'],
+    modulePathIgnorePatterns: ['packages', 'build', 'node_modules', 'data', 'documents', 'models', 'repositories', 'utils', 'config'],
     testMatch: [
         '<rootPath>/tests/**/*.test.ts',
         '<rootPath>/tests/*.test.ts',

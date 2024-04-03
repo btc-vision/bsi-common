@@ -8,17 +8,14 @@ import { PagingQueryInfo, PagingQueryResult } from './PagingQuery.js'
 export abstract class BaseRepository<TDocument extends IBaseDocument> extends Logger {
     protected _db: Db;
     
-    public async delete(criteria: Partial<TDocument>,
+    public async delete(criteria: Partial<Filter<TDocument>>,
         currentSession?: ClientSession): Promise<number> {
         try {
             const collection = this.getCollection();
-            const filter: Filter<TDocument> = {
-                criteria
-            };
-
+            
             const options: DeleteOptions = this.getOptions(currentSession);
             
-            const result = await collection.deleteMany(filter,
+            const result = await collection.deleteMany(criteria,
                 options);
             
             return result.deletedCount;
@@ -33,18 +30,14 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
         }
     }
 
-    public async getAll(criteria?: Partial<TDocument>,
+    public async getAll(criteria?: Partial<Filter<TDocument>>,
         currentSession?: ClientSession): Promise<TDocument[]> {
         try {
             const collection = this.getCollection();
             const options: FindOptions = this.getOptions(currentSession);
 
             if (criteria) {
-                const filter: Filter<TDocument> = {
-                    criteria
-                };
-
-                return await collection.find(filter,
+                return await collection.find(criteria,
                     options).toArray() as TDocument[];
             } else {
                 return await collection.find({},
@@ -59,18 +52,14 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
         }
     }
 
-    public async getCount(criteria?: Partial<TDocument>,
+    public async getCount(criteria?: Partial<Filter<TDocument>>,
         currentSession?: ClientSession): Promise<number> {
         try {
             const collection = this.getCollection();
             const options: CountDocumentsOptions = this.getOptions(currentSession);
 
             if (criteria) {
-                const filter: Filter<TDocument> = {
-                    criteria
-                };
-
-                return await collection.countDocuments(filter,
+                return await collection.countDocuments(criteria,
                     options);
             } else {
                 return await collection.countDocuments({},
@@ -85,16 +74,13 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
         }
     }
 
-    public async queryOne(criteria: Partial<TDocument>,
+    public async queryOne(criteria: Partial<Filter<TDocument>>,
         currentSession?: ClientSession): Promise<TDocument | null>  {
         try {
             const collection = this.getCollection();
             const options: FindOptions = this.getOptions(currentSession);
-            const filter: Filter<TDocument> = {
-                criteria
-            };
-
-            return await collection.findOne(filter,
+            
+            return await collection.findOne(criteria,
                 options) as TDocument;
         } catch (error) {
             if (error instanceof (Error)) {
@@ -105,16 +91,13 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
         }
     }
 
-    public async queryMany(criteria: Partial<TDocument>,
+    public async queryMany(criteria: Partial<Filter<TDocument>>,
         currentSession?: ClientSession): Promise<TDocument[]> {
         try {
             const collection = this.getCollection();
             const options: FindOptions = this.getOptions(currentSession);
-            const filter: Filter<TDocument> = {
-                criteria
-            };
 
-            return await collection.find(filter,
+            return await collection.find(criteria,
                 options).toArray() as TDocument[];
         } catch (error) {
             if (error instanceof (Error)) {
@@ -125,7 +108,7 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
         }
     }
 
-    public async queryManyAndSortPaged(criteria: Partial<TDocument>,
+    public async queryManyAndSortPaged(criteria: Partial<Filter<TDocument>>,
         sort: Sort,
         pagingQueryInfo: PagingQueryInfo,
         currentSession?: ClientSession
@@ -135,11 +118,8 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
             const skips = pagingQueryInfo.pageSize * (pagingQueryInfo.pageNumber - 1);
             let count: number = await this.getCount(criteria);
             const options: FindOptions = this.getOptions(currentSession);
-            const filter: Filter<TDocument> = {
-                criteria
-            };
-
-            const documents = await collection.find(filter,
+            
+            const documents = await collection.find(criteria,
                 options)
                 .sort(sort)
                 .skip(skips)
@@ -160,17 +140,14 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
         }
     }
 
-    public async queryManyAndSort(criteria: Partial<TDocument>,
+    public async queryManyAndSort(criteria: Partial<Filter<TDocument>>,
         sort: Sort,
         currentSession?: ClientSession): Promise<TDocument[]> {
         try {
             const collection = this.getCollection();
             const options: FindOptions = this.getOptions(currentSession);
-            const filter: Filter<TDocument> = {
-                criteria
-            };
-
-            return await collection.find(filter,
+            
+            return await collection.find(criteria,
                 options)
                 .sort(sort)
                 .toArray() as TDocument[];
@@ -183,20 +160,18 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
         }
     }
 
-    public async save(criteria: Partial<TDocument>,
+    public async save(criteria: Partial<Filter<TDocument>>,
         document: TDocument,
         currentSession?: ClientSession
     ): Promise<void> {
         try {
             const collection = this.getCollection();
-            const options: UpdateOptions = this.getOptions(currentSession);
-            const filter: Filter<TDocument> = {
-                criteria
+            const options: UpdateOptions = {
+                ...this.getOptions(currentSession),
+                upsert: true
             };
-
-            options.upsert = true;
-
-            const result = await collection.updateOne(filter,
+            
+            const result = await collection.updateOne(criteria,
                 { $set: document },
                 options);
 
@@ -216,18 +191,18 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
         }
     }
 
-    public async updatePartial(criteria: Partial<TDocument>,
+    public async updatePartial(criteria: Partial<Filter<TDocument>>,
         document: Partial<TDocument>,
         currentSession?: ClientSession): Promise<void> {
         try {
             const collection = this.getCollection();
-            const options: UpdateOptions = this.getOptions(currentSession);
-            const filter: Filter<TDocument> = {
-                criteria
+            const options: UpdateOptions = {
+                ...this.getOptions(currentSession),
+                upsert: true
             };
-
+            
             const updateResult = await collection.updateOne(
-                filter,
+                criteria,
                 { $set: document },
                 options
             );
@@ -260,6 +235,7 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
 
         if (currentSession) {
             options.session = currentSession
+            options.readPreference = 'primary';
         }
 
         return options;

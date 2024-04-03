@@ -7,7 +7,6 @@ import { TypeConverter } from '../../src/utils/TypeConverter.js';
 import { DataAccessError } from '../../src/errors/DataAccessError.js';
 import { PagingQueryInfo } from '../../src/db/repositories/PagingQuery.js';
 import { DBTestHelper } from '../utils/DBTestHelper.js';
-import { DBConstants } from '../../src/db/DBConstants.js';
 import { Config } from '../config/Config.js';
 
 describe('TestRepository Integration Tests', () => {
@@ -17,7 +16,8 @@ describe('TestRepository Integration Tests', () => {
         await DBManagerInstance.setup(Config.DATABASE.CONNECTION_TYPE);
         await DBManagerInstance.connect();
         await DBTestHelper.setupDatabaseForTests(DBManagerInstance.db!,
-            __dirname);
+            `${__dirname}/data/`,
+            'Tests');
         process.env = {
             TEST_JS: '1'
         };
@@ -27,63 +27,29 @@ describe('TestRepository Integration Tests', () => {
         await DBManagerInstance.close();
     });
 
-    describe('deleteById method tests', () => {
-        test('deleteById should return true when document to delete is deleted', async () => {
-            const repo = new TestRepository(DBManagerInstance.db!);
-
-            const result = await repo.deleteById(new ObjectId('6605d14603bce86bdca515b2'));
-
-            expect(result).toBe(true);
-        });
-
-        test('deleteById should return false when document to delete does not exist or was not deleted', async () => {
-            const repo = new TestRepository(DBManagerInstance.db!);
-
-            const result = await repo.deleteById(new ObjectId('000000000000000000000000'));
-
-            expect(result).toBe(false);
-        });
-    });
-
     describe('delete method tests', () => {
         test('delete should return true when document to delete is deleted', async () => {
             const repo = new TestRepository(DBManagerInstance.db!);
-
-            const document: ITestDocument = {
-                _id: new ObjectId('6605d41603bce86bdca515b3'),
-                account: '234',
-                ticker: 'SOL',
-                amount: TypeConverter.numberToDecimal128(100),
-                lock: TypeConverter.numberToDecimal128(0),
-                mint: TypeConverter.numberToDecimal128(0),
-                stake: TypeConverter.numberToDecimal128(0),
-                burn: TypeConverter.numberToDecimal128(0),
-                version: 1
+            const criteria: Partial<Filter<ITestDocument>> = {
+                account: "123",
+                ticker: "SOL"
             };
 
-            const result = await repo.delete(document);
+            const result = await repo.delete(criteria);
 
-            expect(result).toBe(true);
+            expect(result).toBe(1);
         });
 
         test('delete should return false when document to delete does not exist or was not deleted', async () => {
             const repo = new TestRepository(DBManagerInstance.db!);
-
-            const document: ITestDocument = {
-                _id: new ObjectId('000000000000000000000000'),
-                account: '234',
-                ticker: 'SOL',
-                amount: TypeConverter.numberToDecimal128(100),
-                lock: TypeConverter.numberToDecimal128(0),
-                mint: TypeConverter.numberToDecimal128(0),
-                stake: TypeConverter.numberToDecimal128(0),
-                burn: TypeConverter.numberToDecimal128(0),
-                version: 1
+            const criteria: Partial<Filter<ITestDocument>> = {
+                account: "00000",
+                ticker: "ABC"
             };
 
-            const result = await repo.delete(document);;
+            const result = await repo.delete(criteria);
 
-            expect(result).toBe(false);
+            expect(result).toBe(0);
         });
     });
 
@@ -93,16 +59,15 @@ describe('TestRepository Integration Tests', () => {
 
             const documents = await repo.getAll();
 
-            expect(documents.length).toBe(4);
+            expect(documents.length).toBe(5);
         });
 
         test('getAll should return all documents matching single criteria', async () => {
             const repo = new TestRepository(DBManagerInstance.db!);
-
-            const criteria : Partial<Filter<ITestDocument>>  = {
+            const criteria: Partial<Filter<ITestDocument>> = {
                 ticker: 'BTC'
             };
-
+            
             const documents = await repo.getAll(criteria);
 
             expect(documents.length).toBe(3);
@@ -120,43 +85,6 @@ describe('TestRepository Integration Tests', () => {
 
             expect(documents.length).toBe(1);
         });
-
-        test('getAll should return all documents matching id criteria', async () => {
-            const repo = new TestRepository(DBManagerInstance.db!);
-            
-            const criteria: Partial<Filter<ITestDocument>> = {
-                _id: {
-                    $in: [new ObjectId('65ff1f6c0e0dd5a32089fc22'),
-                        new ObjectId('65ff1f6c0e0dd5a32089fc25'),
-                        new ObjectId('000000000000000000000000')
-                    ]
-                }
-            };
-
-            const documents = await repo.getAll(criteria);
-
-            expect(documents.length).toBe(2);
-        });
-    });
-
-    describe('getById method tests', () => {
-        test('getById should return a document when id is found', async () => {
-            const repo = new TestRepository(DBManagerInstance.db!);
-
-            const document = await repo.getById(new ObjectId('65ff1f6c0e0dd5a32089fc28'));
-
-            expect(document).toBeDefined();
-            expect(document).not.toBeNull();
-            expect(document?._id.toString()).toBe('65ff1f6c0e0dd5a32089fc28');
-        });
-
-        test('getById should return null when id is not found', async () => {
-            const repo = new TestRepository(DBManagerInstance.db!);
-
-            const document = await repo.getById(new ObjectId('000000000000000000000000'));
-
-            expect(document).toBeNull();
-        });
     });
 
     describe('getCount method tests', () => {
@@ -165,7 +93,7 @@ describe('TestRepository Integration Tests', () => {
 
             const count = await repo.getCount();
 
-            expect(count).toBe(4);
+            expect(count).toBe(5);
         });
 
         test('getCount should return total number of document in collection matching criteria when criteria is specified', async () => {
@@ -196,7 +124,8 @@ describe('TestRepository Integration Tests', () => {
 
             expect(document).toBeDefined();
             expect(document).not.toBeNull();
-            expect(document?._id.toString()).toBe('65ff1f6c0e0dd5a32089fc25');
+            expect(document!.account).toBe('456');
+            expect(document!.ticker).toBe('BTC');
         });
 
         test('queryOne should return null when no criteria match', async () => {
@@ -226,11 +155,19 @@ describe('TestRepository Integration Tests', () => {
                 ]
             };
 
-            const documents = await repo.queryMany(criteria);
+            const documents = await repo.queryMany(criteria) as ITestDocument[];
 
             expect(documents).toBeDefined();
             expect(documents).not.toBeNull();
             expect(documents.length).toBe(4);
+            expect(documents[0].account).toBe('123');
+            expect(documents[0].ticker).toBe('BTC');
+            expect(documents[1].account).toBe('456');
+            expect(documents[1].ticker).toBe('BTC');
+            expect(documents[2].account).toBe('789');
+            expect(documents[2].ticker).toBe('BTC');
+            expect(documents[3].account).toBe('123');
+            expect(documents[3].ticker).toBe('ETH');
         });
 
         test('queryMany should return empty when no criteria match', async () => {
@@ -370,153 +307,118 @@ describe('TestRepository Integration Tests', () => {
     });
 
     describe('save method tests', () => {
-        test('save a new document, should increment version and upsert the document', async () => {
+        test('save a new document, should upsert the document', async () => {
             const repo = new TestRepository(DBManagerInstance.db!);
 
-            const initialVersion = 0;
             const document: ITestDocument = {
-                _id: new ObjectId(DBConstants.NULL_OBJECT_ID),
-                version: initialVersion,
                 account: '9999',
                 amount: TypeConverter.numberToDecimal128(8888),
                 lock: TypeConverter.numberToDecimal128(0),
                 mint: TypeConverter.numberToDecimal128(0),
                 stake: TypeConverter.numberToDecimal128(0),
                 ticker: 'TCK1'
+            } as ITestDocument;
+
+            const criteria: Partial<Filter<ITestDocument>> = {
+                account: '9999',
+                ticker: 'TCK1'
             };
 
-            await repo.save(document);
+            await repo.save(criteria,
+                document);
             
-            const savedDocument = await repo.getById(document._id);
+            const savedDocument = await repo.queryOne(criteria);
 
             expect(savedDocument).toBeDefined();
             expect(savedDocument).not.toBeNull();
-            expect(savedDocument?.version).toBe(initialVersion + 1);
         });
 
-        test('save an existing document, should increment version and update the document', async () => {
+        test('save an existing document, should update the document', async () => {
             const repo = new TestRepository(DBManagerInstance.db!);
-            let document = await repo.getById(new ObjectId('65ff1f6c0e0dd5a32089fc28'));
+            const criteria: Partial<Filter<ITestDocument>> = {
+                account: '789',
+                ticker: 'BTC'
+            };
+
+            let document = await repo.queryOne(criteria);
 
             expect(document).not.toBeNull();
 
             if (document !== null) {
-                const currentVersion = document.version;
                 const updateDocument: ITestDocument = {
                     account: document.account,
                     amount: document.amount,
                     lock: TypeConverter.numberToDecimal128(999),
                     mint: document.mint,
                     stake: document.stake,
-                    ticker: document.ticker,
-                    version: document.version,
-                    _id: document._id
-                };
+                    ticker: document.ticker
+                } as ITestDocument;
 
-                await repo.save(updateDocument);
+                await repo.save(criteria,
+                    updateDocument);
 
-                expect(updateDocument.version).toBe(currentVersion + 1);
-
-                let document2 = await repo.getById(new ObjectId('65ff1f6c0e0dd5a32089fc28'));
+                let document2 = await repo.queryOne(criteria);
 
                 expect(document2).not.toBeNull();
 
                 if (document2 !== null) {
-                    expect(document2.version).toBe(currentVersion + 1);
                     expect(document2.lock.toString()).toBe(TypeConverter.numberToDecimal128(999).toString());
                 }
-            }
-        });
-
-        test('save an existing document with an outdated version, should throw concurency error', async () => {
-            const repo = new TestRepository(DBManagerInstance.db!);
-            let document = await repo.getById(new ObjectId('65ff1f6c0e0dd5a32089fc28'));
-
-            expect(document).not.toBeNull();
-
-            if (document !== null) {
-                const updateDocument: ITestDocument = {
-                    account: document.account,
-                    amount: document.amount,
-                    lock: TypeConverter.numberToDecimal128(999),
-                    mint: document.mint,
-                    stake: document.stake,
-                    ticker: document.ticker,
-                    version: 1,
-                    _id: document._id
-                };
-
-                await expect(repo.save(updateDocument)).rejects.toThrow(DataAccessError);
             }
         });
     });
 
     describe('updatePartial method tests', () => {
-        test('updatePartial an existing document, should increment version and update the document', async () => {
+        test('updatePartial an existing document, should update the document', async () => {
             const repo = new TestRepository(DBManagerInstance.db!);
-            let document = await repo.getById(new ObjectId('65ff1f6c0e0dd5a32089fc28'));
+            const criteria: Partial<Filter<ITestDocument>> = {
+                account: '789',
+                ticker: 'BTC'
+            };
+
+            let document = await repo.queryOne(criteria);
 
             expect(document).not.toBeNull();
 
             if (document !== null) {
-                const currentVersion = document.version;
                 const updateDocument: Partial<ITestDocument> = {
                     mint: TypeConverter.numberToDecimal128(3333),
                     stake: TypeConverter.numberToDecimal128(4444),
                 };
 
-                await repo.updatePartial(document._id,
-                    currentVersion,
+                await repo.updatePartial(criteria,
                     updateDocument);
 
-                expect(updateDocument.version).toBe(currentVersion + 1);
-
-                let document2 = await repo.getById(new ObjectId('65ff1f6c0e0dd5a32089fc28'));
+                let document2 = await repo.queryOne(criteria);
 
                 expect(document2).not.toBeNull();
 
                 if (document2 !== null) {
-                    expect(document2.version).toBe(currentVersion + 1);
                     expect(document2.mint.toString()).toBe(TypeConverter.numberToDecimal128(3333).toString());
                     expect(document2.stake.toString()).toBe(TypeConverter.numberToDecimal128(4444).toString());
                 }
             }
         });
 
-        test('updatePartial an existing document with a non existing id, should throw concurency error', async () => {
+        test('updatePartial an existing document with a non existing document, should throw concurency error', async () => {
             const repo = new TestRepository(DBManagerInstance.db!);
+            const criteria: Partial<Filter<ITestDocument>> = {
+                account: '0000',
+                ticker: 'ABC'
+            };
 
             const updateDocument: Partial<ITestDocument> = {
                 mint: TypeConverter.numberToDecimal128(3333),
                 stake: TypeConverter.numberToDecimal128(4444),
             };
 
-            await expect(repo.updatePartial(new ObjectId(),
-                0,
+            await expect(repo.updatePartial(criteria,
                 updateDocument)).rejects.toThrow(DataAccessError);
-        });
-
-        test('updatePartial an existing document with an outdated version, should throw concurency error', async () => {
-            const repo = new TestRepository(DBManagerInstance.db!);
-            let document = await repo.getById(new ObjectId('65ff1f6c0e0dd5a32089fc28'));
-
-            expect(document).not.toBeNull();
-
-            if (document !== null) {
-                const updateDocument: Partial<ITestDocument> = {
-                    mint: TypeConverter.numberToDecimal128(3333),
-                    stake: TypeConverter.numberToDecimal128(4444),
-                };
-
-                await expect(repo.updatePartial(document._id,
-                    0,
-                    updateDocument)).rejects.toThrow(DataAccessError);
-            }
         });
     });
 
     describe('custom db connection tests', () => {
-        test('deleteById should not delete the document if rollback is called', async () => {
+        test('delete should not delete the document if rollback is called', async () => {
             const [mongoClient, databaseName] = DBManagerInstance.createNewMongoClient();
 
             try {
@@ -531,15 +433,19 @@ describe('TestRepository Integration Tests', () => {
 
                     const repo = new TestRepository(db);
                     const repo2 = new TestRepository(DBManagerInstance.db!);
+                    const criteria: Partial<Filter<ITestDocument>> = {
+                        account: '789',
+                        ticker: 'BTC'
+                    };
 
-                    const result = await repo.deleteById(new ObjectId('65ff1f6c0e0dd5a32089fc28'),
+                    const result = await repo.delete(criteria,
                         session);
 
-                    expect(result).toBe(true);
+                    expect(result).toBe(1);
 
                     await session.abortTransaction();
 
-                    const document = await repo2.getById(new ObjectId('65ff1f6c0e0dd5a32089fc28'));
+                    const document = await repo2.queryOne(criteria);
 
                     expect(document).toBeDefined();
                     expect(document).not.toBeNull();
@@ -551,7 +457,7 @@ describe('TestRepository Integration Tests', () => {
             }
         });
 
-        test('deleteById should delete the document if commit is called', async () => {
+        test('delete should delete the document if commit is called', async () => {
             const [mongoClient, databaseName] = DBManagerInstance.createNewMongoClient();
 
             try {
@@ -566,15 +472,19 @@ describe('TestRepository Integration Tests', () => {
 
                     const repo = new TestRepository(db);
                     const repo2 = new TestRepository(DBManagerInstance.db!);
+                    const criteria: Partial<Filter<ITestDocument>> = {
+                        account: '789',
+                        ticker: 'BTC'
+                    };
 
-                    const result = await repo.deleteById(new ObjectId('65ff1f6c0e0dd5a32089fc28'),
+                    const result = await repo.delete(criteria,
                         session);
 
-                    expect(result).toBe(true);
+                    expect(result).toBe(1);
 
                     await session.commitTransaction();
 
-                    const document = await repo2.getById(new ObjectId('65ff1f6c0e0dd5a32089fc28'));
+                    const document = await repo2.queryOne(criteria);
                     
                     expect(document).toBeNull();
                 } finally {

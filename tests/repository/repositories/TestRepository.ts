@@ -3,7 +3,7 @@ import { BaseRepository } from '../../../src/db/repositories/BaseRepository.js';
 import { ITestDocument } from '../documents/interfaces/ITestDocument.js';
 
 export class TestRepository extends BaseRepository<ITestDocument> {
-    public moduleName: string = 'AccountRepository';
+    public moduleName: string = 'TestRepository';
     public logColor: string = '#afeeee';
 
     constructor(db: Db) {
