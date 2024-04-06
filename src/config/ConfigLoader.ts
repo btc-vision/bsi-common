@@ -13,7 +13,7 @@ export abstract class ConfigManager<T extends IConfigTemplate> extends Logger {
     public readonly logColor: string = '#c71585';
     protected config: IConfig<T> = this.getDefaultConfig();
 
-    constructor(fullFileName: string) {
+    protected constructor(fullFileName: string) {
         super();
 
         this.loadConfig(fullFileName);
@@ -131,7 +131,10 @@ export abstract class ConfigManager<T extends IConfigTemplate> extends Logger {
 
             if (
                 parsedConfig.BLOCKCHAIN.BITCOIND_NETWORK !== BitcoinNetwork.Mainnet &&
-                parsedConfig.BLOCKCHAIN.BITCOIND_NETWORK !== BitcoinNetwork.TestNet
+                parsedConfig.BLOCKCHAIN.BITCOIND_NETWORK !== BitcoinNetwork.TestNet &&
+                parsedConfig.BLOCKCHAIN.BITCOIND_NETWORK !== BitcoinNetwork.Regtest &&
+                parsedConfig.BLOCKCHAIN.BITCOIND_NETWORK !== BitcoinNetwork.Signet &&
+                parsedConfig.BLOCKCHAIN.BITCOIND_NETWORK !== BitcoinNetwork.Unknown
             ) {
                 throw new Error(
                     `Oops the property BLOCKCHAIN.BITCOIND_NETWORK is not a valid BitcoinNetwork enum value.`,
