@@ -241,6 +241,36 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
         }
     }
 
+    public async updatePartialWithFilter(
+        criteria: Partial<Filter<TDocument>>,
+        document: Partial<Filter<TDocument>>,
+        currentSession?: ClientSession,
+    ): Promise<void> {
+        try {
+            const collection = this.getCollection();
+            const options: UpdateOptions = {
+                ...this.getOptions(currentSession),
+                upsert: true,
+            };
+
+            const updateResult = await collection.updateOne(criteria, document, options);
+
+            if (!updateResult.acknowledged) {
+                throw new DataAccessError(
+                    'Concurency error while updating.',
+                    DataAccessErrorType.Concurency,
+                    '',
+                );
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                throw new DataAccessError(error.message, DataAccessErrorType.Unknown, '');
+            } else {
+                throw error;
+            }
+        }
+    }
+
     protected abstract getCollection(): Collection<TDocument>;
 
     protected getOptions(currentSession?: ClientSession): OperationOptions {
