@@ -1,6 +1,6 @@
 {
     "type": "module",
-    "name": "@btc-vision/motoswapcommon",
+    "name": "@btc-vision/bsi-common",
     "version": "1.0.17",
     "description": "",
     "main": "build/index.js",
