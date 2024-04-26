@@ -48,10 +48,13 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
     public async getAll(
         criteria?: Partial<Filter<TDocument>>,
         currentSession?: ClientSession,
+        sort?: Sort,
     ): Promise<TDocument[]> {
         try {
             const collection = this.getCollection();
             const options: FindOptions = this.getOptions(currentSession);
+
+            options.sort = sort;
 
             if (criteria) {
                 return (await collection.find(criteria, options).toArray()) as TDocument[];
@@ -92,10 +95,13 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
     public async queryOne(
         criteria: Partial<Filter<TDocument>>,
         currentSession?: ClientSession,
+        sort?: Sort,
     ): Promise<TDocument | null> {
         try {
             const collection = this.getCollection();
             const options: FindOptions = this.getOptions(currentSession);
+
+            options.sort = sort;
 
             return (await collection.findOne(criteria, options)) as TDocument;
         } catch (error) {
@@ -110,10 +116,13 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
     public async queryMany(
         criteria: Partial<Filter<TDocument>>,
         currentSession?: ClientSession,
+        sort?: Sort,
     ): Promise<TDocument[]> {
         try {
             const collection = this.getCollection();
             const options: FindOptions = this.getOptions(currentSession);
+
+            options.sort = sort;
 
             return (await collection.find(criteria, options).toArray()) as TDocument[];
         } catch (error) {
