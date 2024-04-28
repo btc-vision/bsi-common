@@ -96,7 +96,9 @@ export class ConfigurableDBManager extends InnerDBManager {
             this.isConnected = false;
 
             const client = await this.mongo.connect().catch((err: AnyError) => {
-                this.error(`Something went wrong while connecting to mongo database: ${err}.`);
+                this.error(
+                    `Something went wrong while connecting to mongo database: ${err}. Can not connect to ${this.config.DATABASE.HOST}:${this.config.DATABASE.PORT}/${this.config.DATABASE}`,
+                );
 
                 setTimeout(async () => {
                     this.warn(`Attempting mongo auto reconnection.`);
