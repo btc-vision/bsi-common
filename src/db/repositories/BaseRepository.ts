@@ -1,6 +1,7 @@
 import {
     AnyBulkWriteOperation,
     BulkOperationBase,
+    BulkWriteOptions,
     BulkWriteResult,
     ClientSession,
     Collection,
@@ -277,7 +278,8 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
     ): Promise<void> {
         try {
             const collection = this.getCollection();
-            const options: OperationOptions = this.getOptions(currentSession);
+            const options: BulkWriteOptions = this.getOptions(currentSession);
+            options.ordered = false;
 
             const result: BulkWriteResult = await collection.bulkWrite(operations, options);
 
