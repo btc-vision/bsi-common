@@ -1,4 +1,8 @@
 import {
+    AnyBulkWriteOperation,
+    BulkOperationBase,
+    BulkWriteOptions,
+    BulkWriteResult,
     ClientSession,
     Collection,
     CountDocumentsOptions,
@@ -38,7 +42,9 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
             return result.deletedCount;
         } catch (error) {
             if (error instanceof Error) {
-                throw new DataAccessError(error.message, DataAccessErrorType.Unknown, '');
+                const errorDescription: string = error.stack || error.message;
+
+                throw new DataAccessError(errorDescription, DataAccessErrorType.Unknown, '');
             } else {
                 throw error;
             }
@@ -48,10 +54,13 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
     public async getAll(
         criteria?: Partial<Filter<TDocument>>,
         currentSession?: ClientSession,
+        sort?: Sort,
     ): Promise<TDocument[]> {
         try {
             const collection = this.getCollection();
             const options: FindOptions = this.getOptions(currentSession);
+
+            options.sort = sort;
 
             if (criteria) {
                 return (await collection.find(criteria, options).toArray()) as TDocument[];
@@ -60,7 +69,9 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
             }
         } catch (error) {
             if (error instanceof Error) {
-                throw new DataAccessError(error.message);
+                const errorDescription: string = error.stack || error.message;
+
+                throw new DataAccessError(errorDescription, DataAccessErrorType.Unknown, '');
             } else {
                 throw error;
             }
@@ -82,7 +93,9 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
             }
         } catch (error) {
             if (error instanceof Error) {
-                throw new DataAccessError(error.message);
+                const errorDescription: string = error.stack || error.message;
+
+                throw new DataAccessError(errorDescription, DataAccessErrorType.Unknown, '');
             } else {
                 throw error;
             }
@@ -92,15 +105,20 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
     public async queryOne(
         criteria: Partial<Filter<TDocument>>,
         currentSession?: ClientSession,
+        sort?: Sort,
     ): Promise<TDocument | null> {
         try {
             const collection = this.getCollection();
             const options: FindOptions = this.getOptions(currentSession);
 
+            options.sort = sort;
+
             return (await collection.findOne(criteria, options)) as TDocument;
         } catch (error) {
             if (error instanceof Error) {
-                throw new DataAccessError(error.message);
+                const errorDescription: string = error.stack || error.message;
+
+                throw new DataAccessError(errorDescription, DataAccessErrorType.Unknown, '');
             } else {
                 throw error;
             }
@@ -110,15 +128,20 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
     public async queryMany(
         criteria: Partial<Filter<TDocument>>,
         currentSession?: ClientSession,
+        sort?: Sort,
     ): Promise<TDocument[]> {
         try {
             const collection = this.getCollection();
             const options: FindOptions = this.getOptions(currentSession);
 
+            options.sort = sort;
+
             return (await collection.find(criteria, options).toArray()) as TDocument[];
         } catch (error) {
             if (error instanceof Error) {
-                throw new DataAccessError(error.message);
+                const errorDescription: string = error.stack || error.message;
+
+                throw new DataAccessError(errorDescription, DataAccessErrorType.Unknown, '');
             } else {
                 throw error;
             }
@@ -153,7 +176,9 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
             );
         } catch (error) {
             if (error instanceof Error) {
-                throw new DataAccessError(error.message);
+                const errorDescription: string = error.stack || error.message;
+
+                throw new DataAccessError(errorDescription, DataAccessErrorType.Unknown, '');
             } else {
                 throw error;
             }
@@ -172,7 +197,9 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
             return (await collection.find(criteria, options).sort(sort).toArray()) as TDocument[];
         } catch (error) {
             if (error instanceof Error) {
-                throw new DataAccessError(error.message);
+                const errorDescription: string = error.stack || error.message;
+
+                throw new DataAccessError(errorDescription, DataAccessErrorType.Unknown, '');
             } else {
                 throw error;
             }
@@ -195,7 +222,7 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
 
             if (!result.acknowledged) {
                 throw new DataAccessError(
-                    'Concurency error while updating.',
+                    'Concurrency error while updating.',
                     DataAccessErrorType.Concurency,
                     '',
                 );
@@ -204,7 +231,9 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
             if (error instanceof DataAccessError) {
                 throw error;
             } else if (error instanceof Error) {
-                throw new DataAccessError(error.message);
+                const errorDescription: string = error.stack || error.message;
+
+                throw new DataAccessError(errorDescription, DataAccessErrorType.Unknown, '');
             } else {
                 throw error;
             }
@@ -227,14 +256,49 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
 
             if (!updateResult.acknowledged) {
                 throw new DataAccessError(
-                    'Concurency error while updating.',
+                    'Concurrency error while updating.',
                     DataAccessErrorType.Concurency,
                     '',
                 );
             }
         } catch (error) {
             if (error instanceof Error) {
-                throw new DataAccessError(error.message, DataAccessErrorType.Unknown, '');
+                const errorDescription: string = error.stack || error.message;
+
+                throw new DataAccessError(errorDescription, DataAccessErrorType.Unknown, '');
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    public async bulkWrite(
+        operations: AnyBulkWriteOperation<TDocument>[],
+        currentSession?: ClientSession,
+    ): Promise<void> {
+        try {
+            const collection = this.getCollection();
+            const options: BulkWriteOptions = this.getOptions(currentSession);
+            options.ordered = false;
+
+            const result: BulkWriteResult = await collection.bulkWrite(operations, options);
+
+            if (result.hasWriteErrors()) {
+                result.getWriteErrors().forEach((error) => {
+                    this.error(`Bulk write error: ${error}`);
+                });
+
+                throw new DataAccessError('Failed to bulk write.', DataAccessErrorType.Unknown, '');
+            }
+
+            if (!result.isOk()) {
+                throw new DataAccessError('Failed to bulk write.', DataAccessErrorType.Unknown, '');
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                const errorDescription: string = error.stack || error.message;
+
+                throw new DataAccessError(errorDescription, DataAccessErrorType.Unknown, '');
             } else {
                 throw error;
             }
@@ -257,14 +321,16 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
 
             if (!updateResult.acknowledged) {
                 throw new DataAccessError(
-                    'Concurency error while updating.',
+                    'Concurrency error while updating.',
                     DataAccessErrorType.Concurency,
                     '',
                 );
             }
         } catch (error) {
             if (error instanceof Error) {
-                throw new DataAccessError(error.message, DataAccessErrorType.Unknown, '');
+                const errorDescription: string = error.stack || error.message;
+
+                throw new DataAccessError(errorDescription, DataAccessErrorType.Unknown, '');
             } else {
                 throw error;
             }

@@ -1,7 +1,7 @@
 {
     "type": "module",
-    "name": "@btc-vision/motoswapcommon",
-    "version": "1.0.18",
+    "name": "@btc-vision/bsi-common",
+    "version": "1.0.8",
     "description": "",
     "main": "build/index.js",
     "types": "build/index.d.ts",
@@ -21,8 +21,8 @@
         "setup": "npm npm i && npm run build",
         "install": "gulp && gulp cjs"
     },
-    "author": "",
-    "license": "ISC",
+    "author": "BlobMaster41",
+    "license": "LICENSE.MD",
     "devDependencies": {
         "@babel/preset-env": "^7.24.3",
         "@types/json2xls": "^0.0.0",

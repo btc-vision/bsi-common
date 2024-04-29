@@ -39,25 +39,27 @@ let lightenColor = function (color: string, percent: number) {
 export class Logger implements ILogger {
     public readonly moduleName: string = '';
     public readonly logColor: string = '#00bfff';
+
     protected enableLogs: boolean = true;
     protected hideLogs: boolean = false;
-    private readonly pink: string = '#ff00ff';
-    private readonly lightPink: string = lightenColor(this.pink, 75);
-    private readonly purple: string = '#9400d3';
-    private readonly lightPurple: string = lightenColor(this.purple, 15);
-    private readonly lighterPurple: string = lightenColor(this.lightPurple, 15);
-    private readonly green: string = '#7cfc00';
-    private readonly lightGreen: string = lightenColor(this.green, 15);
-    private readonly moca: string = '#ffdead';
-    private readonly lightMoca: string = lightenColor(this.moca, 15);
-    private readonly orange: string = '#ff8c00';
-    private readonly lightOrange: string = lightenColor(this.orange, 15);
-    private readonly red: string = '#ff4500';
-    private readonly lightRed: string = lightenColor(this.red, 15);
-    private readonly white: string = '#ffffff';
-    private readonly lightWhite: string = lightenColor(this.white, 15);
-    private readonly darkred: string = '#8b0000';
-    private readonly lightdarkred: string = lightenColor(this.darkred, 15);
+
+    readonly #pink: string = '#ff00ff';
+    readonly #lightPink: string = lightenColor(this.#pink, 75);
+    readonly #purple: string = '#9400d3';
+    readonly #lightPurple: string = lightenColor(this.#purple, 15);
+    readonly #lighterPurple: string = lightenColor(this.#lightPurple, 15);
+    readonly #green: string = '#7cfc00';
+    readonly #lightGreen: string = lightenColor(this.#green, 15);
+    readonly #moca: string = '#ffdead';
+    readonly #lightMoca: string = lightenColor(this.#moca, 15);
+    readonly #orange: string = '#ff8c00';
+    readonly #lightOrange: string = lightenColor(this.#orange, 15);
+    readonly #red: string = '#ff4500';
+    readonly #lightRed: string = lightenColor(this.#red, 15);
+    readonly #white: string = '#ffffff';
+    readonly #lightWhite: string = lightenColor(this.#white, 15);
+    readonly #darkred: string = '#8b0000';
+    readonly #lightdarkred: string = lightenColor(this.#darkred, 15);
 
     constructor() {
         this.moduleName = this.constructor.name;
@@ -65,33 +67,6 @@ export class Logger implements ILogger {
 
     public getStartPrefix(): string {
         return '';
-    }
-
-    public losses(...args: any[]): void {
-        if (!this.enableLogs) return;
-
-        console.log(
-            chalk.hex(this.red)(`${this.getStartPrefix()}[${this.moduleName} LOSS]: `) +
-                chalk.hex(this.lightRed)(...args),
-        );
-    }
-
-    public gain(...args: any[]): void {
-        if (!this.enableLogs) return;
-
-        console.log(
-            chalk.hex(this.green)(`${this.getStartPrefix()}[${this.moduleName} GAIN]: `) +
-                chalk.hex(this.lightGreen)(...args),
-        );
-    }
-
-    public notProfitable(...args: any[]): void {
-        if (!this.enableLogs) return;
-
-        console.log(
-            chalk.hex(this.pink)(`${this.getStartPrefix()}[${this.moduleName} NOT PROFITABLE]: `) +
-                chalk.hex(this.lightPink)(...args),
-        );
     }
 
     public fancyLog(
@@ -104,16 +79,16 @@ export class Logger implements ILogger {
         if (!this.enableLogs) return;
 
         console.log(
-            chalk.hex(this.pink)(`${this.getStartPrefix()}[${this.moduleName} INFO]: `) +
-                chalk.hex(this.white)(msg1) +
+            chalk.hex(this.#pink)(`${this.getStartPrefix()}[${this.moduleName} INFO]: `) +
+                chalk.hex(this.#white)(msg1) +
                 ' ' +
-                chalk.hex(this.lightOrange)(highlight1) +
+                chalk.hex(this.#lightOrange)(highlight1) +
                 ' ' +
-                chalk.hex(this.white)(msg2) +
+                chalk.hex(this.#white)(msg2) +
                 ' ' +
-                chalk.hex(this.lighterPurple)(highlight2) +
+                chalk.hex(this.#lighterPurple)(highlight2) +
                 ' ' +
-                chalk.hex(this.white)(msg3),
+                chalk.hex(this.#white)(msg3),
         );
     }
 
@@ -134,8 +109,8 @@ export class Logger implements ILogger {
 
         if (!this.hideLogs) {
             console.log(
-                chalk.hex(this.lightOrange)(`${this.getStartPrefix()}[${this.moduleName} LOG]: `) +
-                    chalk.hex(this.white)(...args),
+                chalk.hex(this.#lightOrange)(`${this.getStartPrefix()}[${this.moduleName} LOG]: `) +
+                    chalk.hex(this.#white)(...args),
             );
         }
     }
@@ -144,8 +119,8 @@ export class Logger implements ILogger {
         if (!this.enableLogs) return;
 
         console.log(
-            chalk.hex(this.red)(`${this.getStartPrefix()}[${this.moduleName} ERROR]: `) +
-                chalk.hex(this.lightRed)(...args),
+            chalk.hex(this.#red)(`${this.getStartPrefix()}[${this.moduleName} ERROR]: `) +
+                chalk.hex(this.#lightRed)(...args),
         );
     }
 
@@ -153,8 +128,8 @@ export class Logger implements ILogger {
         if (!this.enableLogs) return;
 
         console.log(
-            chalk.hex(this.orange)(`${this.getStartPrefix()}[${this.moduleName} WARN]: `) +
-                chalk.hex(this.lightOrange)(...args),
+            chalk.hex(this.#orange)(`${this.getStartPrefix()}[${this.moduleName} WARN]: `) +
+                chalk.hex(this.#lightOrange)(...args),
         );
     }
 
@@ -163,8 +138,8 @@ export class Logger implements ILogger {
 
         if (!this.hideLogs) {
             console.log(
-                chalk.hex(this.moca)(`${this.getStartPrefix()}[${this.moduleName} DEBUG]: `) +
-                    chalk.hex(this.lightMoca)(...args),
+                chalk.hex(this.#moca)(`${this.getStartPrefix()}[${this.moduleName} DEBUG]: `) +
+                    chalk.hex(this.#lightMoca)(...args),
             );
         }
     }
@@ -174,8 +149,8 @@ export class Logger implements ILogger {
 
         if (!this.hideLogs) {
             console.log(
-                chalk.hex(this.green)(`${this.getStartPrefix()}[${this.moduleName} SUCCESS]: `) +
-                    chalk.hex(this.lightGreen)(...args),
+                chalk.hex(this.#green)(`${this.getStartPrefix()}[${this.moduleName} SUCCESS]: `) +
+                    chalk.hex(this.#lightGreen)(...args),
             );
         }
     }
@@ -185,8 +160,8 @@ export class Logger implements ILogger {
 
         if (!this.hideLogs) {
             console.log(
-                chalk.hex(this.red)(`${this.getStartPrefix()}[${this.moduleName} FAIL]: `) +
-                    chalk.hex(this.lightRed)(...args),
+                chalk.hex(this.#red)(`${this.getStartPrefix()}[${this.moduleName} FAIL]: `) +
+                    chalk.hex(this.#lightRed)(...args),
             );
         }
     }
@@ -196,8 +171,8 @@ export class Logger implements ILogger {
 
         if (!this.hideLogs) {
             console.log(
-                chalk.hex(this.purple)(`${this.getStartPrefix()}[${this.moduleName} DEBUG]: `) +
-                    chalk.hex(this.lightPurple)(...args),
+                chalk.hex(this.#purple)(`${this.getStartPrefix()}[${this.moduleName} DEBUG]: `) +
+                    chalk.hex(this.#lightPurple)(...args),
             );
         }
     }
@@ -206,8 +181,8 @@ export class Logger implements ILogger {
         if (!this.enableLogs) return;
 
         console.log(
-            chalk.hex(this.pink)(`${this.getStartPrefix()}[${this.moduleName} IMPORTANT]: `) +
-                chalk.hex(this.lightPink)(...args),
+            chalk.hex(this.#pink)(`${this.getStartPrefix()}[${this.moduleName} IMPORTANT]: `) +
+                chalk.hex(this.#lightPink)(...args),
         );
     }
 
@@ -215,8 +190,8 @@ export class Logger implements ILogger {
         if (!this.enableLogs) return;
 
         console.log(
-            chalk.hex(this.darkred)(`${this.getStartPrefix()}[${this.moduleName} HELP PANIC]: `) +
-                chalk.hex(this.lightdarkred)(...args),
+            chalk.hex(this.#darkred)(`${this.getStartPrefix()}[${this.moduleName} HELP PANIC]: `) +
+                chalk.hex(this.#lightdarkred)(...args),
         );
     }
 
@@ -224,8 +199,8 @@ export class Logger implements ILogger {
         if (!this.enableLogs) return;
 
         console.log(
-            chalk.hex(this.pink)(`${this.getStartPrefix()}[${this.moduleName} INFO]: `) +
-                chalk.hex(this.white)(...args),
+            chalk.hex(this.#pink)(`${this.getStartPrefix()}[${this.moduleName} INFO]: `) +
+                chalk.hex(this.#white)(...args),
         );
     }
 
@@ -243,7 +218,7 @@ export class Logger implements ILogger {
 
         console.log(
             chalk.hex('#ffffff')(`${this.getStartPrefix()}[${this.moduleName} TRACE LOG]: `) +
-                chalk.hex(this.lightWhite)(...args),
+                chalk.hex(this.#lightWhite)(...args),
         );
     }
 
