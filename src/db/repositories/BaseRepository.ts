@@ -1,4 +1,7 @@
 import {
+    AnyBulkWriteOperation,
+    BulkOperationBase,
+    BulkWriteResult,
     ClientSession,
     Collection,
     CountDocumentsOptions,
@@ -256,6 +259,38 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
                     DataAccessErrorType.Concurency,
                     '',
                 );
+            }
+        } catch (error) {
+            if (error instanceof Error) {
+                const errorDescription: string = error.stack || error.message;
+
+                throw new DataAccessError(errorDescription, DataAccessErrorType.Unknown, '');
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    public async bulkWrite(
+        operations: AnyBulkWriteOperation<TDocument>[],
+        currentSession?: ClientSession,
+    ): Promise<void> {
+        try {
+            const collection = this.getCollection();
+            const options: OperationOptions = this.getOptions(currentSession);
+
+            const result: BulkWriteResult = await collection.bulkWrite(operations, options);
+
+            if (result.hasWriteErrors()) {
+                result.getWriteErrors().forEach((error) => {
+                    this.error(`Bulk write error: ${error}`);
+                });
+
+                throw new DataAccessError('Failed to bulk write.', DataAccessErrorType.Unknown, '');
+            }
+
+            if (!result.isOk()) {
+                throw new DataAccessError('Failed to bulk write.', DataAccessErrorType.Unknown, '');
             }
         } catch (error) {
             if (error instanceof Error) {
