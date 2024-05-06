@@ -13,10 +13,10 @@ export abstract class ConfigManager<T extends IConfigTemplate> extends Logger {
     public readonly logColor: string = '#c71585';
     protected config: IConfig<T> = this.getDefaultConfig();
 
-    protected constructor(fullFileName: string) {
+    protected constructor(fullFileName: string, preload: boolean = true) {
         super();
 
-        this.loadConfig(fullFileName);
+        if (preload) this.loadConfig(fullFileName);
     }
 
     public abstract getConfigs(): ConfigBase<T>;
@@ -239,7 +239,7 @@ export abstract class ConfigManager<T extends IConfigTemplate> extends Logger {
             parsedConfig.MRC_DISTRIBUTION_PERIOD || this.config.MRC_DISTRIBUTION_PERIOD;
     }
 
-    private loadConfig(fullFileName: string): void {
+    protected loadConfig(fullFileName: string): void {
         const config: string = fs.readFileSync(fullFileName, 'utf-8');
 
         if (!config) {
