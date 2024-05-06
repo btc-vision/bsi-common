@@ -27,7 +27,7 @@ export abstract class ConfigBase<T extends IConfigTemplate> implements IConfigBa
 
     public readonly ORDCLIENT: ORDClientConfig;
 
-    constructor(config: IConfig<T>) {
+    protected constructor(config: IConfig<T>) {
         this.DEBUG_LEVEL = config.DEBUG_LEVEL;
         this.DOCS = config.DOCS;
 
