@@ -50,6 +50,7 @@
         "gulp-cached": "^1.1.1",
         "gulp-logger": "^0.0.2",
         "gulp-typescript": "^6.0.0-alpha.1",
+        "gulplog": "^2.2.0",
         "mongo-sanitize": "^1.1.0",
         "mongodb": "^6.5.0",
         "node-cache": "^5.1.2",
