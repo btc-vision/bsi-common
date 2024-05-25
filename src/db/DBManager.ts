@@ -1,4 +1,4 @@
-import { AnyError, ClientSession, Db, MongoClient, ReadPreference } from 'mongodb';
+import { AnyError, ClientSession, ClientSessionOptions, Db, MongoClient, ReadPreference } from 'mongodb';
 import { IConfig, IConfigBase } from '../config/interfaces/IConfig.js';
 import { DataAccessError } from '../errors/DataAccessError.js';
 import { DataAccessErrorType } from '../errors/enums/DataAccessErrorType.js';
@@ -130,7 +130,13 @@ export class ConfigurableDBManager extends InnerDBManager {
             throw new DataAccessError('Client not connected.', DataAccessErrorType.Unknown, '');
         }
 
-        return this.client.startSession();
+        const sessionConfig: ClientSessionOptions = {
+            defaultTransactionOptions: {
+                maxCommitTimeMS: 29 * 60000 // max 29 minutes.
+            }
+        }
+
+        return this.client.startSession(sessionConfig);
     }
 
     #getMongoCredentials() {
