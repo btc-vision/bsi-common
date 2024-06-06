@@ -1,4 +1,4 @@
-# OPNet - Common Library
+# OP_NET - Common Library
 
 ![Bitcoin](https://img.shields.io/badge/Bitcoin-000?style=for-the-badge&logo=bitcoin&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
@@ -13,7 +13,7 @@
 This library includes all the shared methods that OP_NET uses in its projects. It is written in TypeScript and provides a comprehensive set of functions.
 
 ## Getting Started
-Getting started with the OPNet Common Library is easy. Follow the steps below to install the library and start using it in your project.
+Getting started with the OP_NET Common Library is easy. Follow the steps below to install the library and start using it in your project.
 
 ### Prerequisites
 
@@ -43,7 +43,7 @@ npm i @btc-vision/bsi-common
 
 ## Contribution
 
-Contributions are welcome! Please read through the `CONTRIBUTING.md` file for guidelines on how to submit issues, feature requests, and pull requests. We appreciate your input and encourage you to help us improve OPNet.
+Contributions are welcome! Please read through the `CONTRIBUTING.md` file for guidelines on how to submit issues, feature requests, and pull requests. We appreciate your input and encourage you to help us improve OP_NET.
 
 ## License
 
