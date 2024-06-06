@@ -1,7 +1,7 @@
 import { ClientSession } from 'mongodb';
 import { IConfig, IConfigBase } from '../../config/interfaces/IConfig.js';
-import { Logger } from '../../logger/Logger.js';
 import { MONGO_CONNECTION_TYPE } from '../credentials/MongoCredentials.js';
+import { Logger } from '@btc-vision/logger';
 
 export interface IDBManager {
     connect: () => Promise<void>;
@@ -13,7 +13,7 @@ export interface IDBManager {
 export abstract class InnerDBManager extends Logger implements IDBManager {
     protected config: IConfig<IConfigBase>;
 
-    constructor(config: IConfig<IConfigBase>) {
+    protected constructor(config: IConfig<IConfigBase>) {
         super();
         this.config = config;
     }

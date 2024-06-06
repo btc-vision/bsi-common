@@ -1,7 +1,7 @@
 import { CacheStrategy } from '../../cache/enums/CacheStrategy.js';
 import { MONGO_CONNECTION_TYPE } from '../../db/credentials/MongoCredentials.js';
-import { DebugLevel } from '../../logger/enums/DebugLevel.js';
 import { BitcoinNetwork } from '../enums/BitcoinNetwork.js';
+import { DebugLevel } from '@btc-vision/logger';
 
 export interface DocsConfig {
     ENABLED: boolean;

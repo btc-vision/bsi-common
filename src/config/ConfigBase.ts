@@ -1,5 +1,4 @@
 import { CacheStrategy } from '../cache/enums/CacheStrategy.js';
-import { DebugLevel } from '../logger/enums/DebugLevel.js';
 import {
     APIConfig,
     BlockchainConfig,
@@ -10,6 +9,7 @@ import {
     IConfigTemplate,
     ORDClientConfig,
 } from './interfaces/IConfig.js';
+import { DebugLevel } from '@btc-vision/logger';
 
 export abstract class ConfigBase<T extends IConfigTemplate> implements IConfigBase {
     public readonly MRC_DISTRIBUTION_PERIOD: number;

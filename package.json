@@ -1,11 +1,14 @@
 {
     "type": "module",
     "name": "@btc-vision/bsi-common",
-    "version": "1.0.13",
-    "description": "",
+    "version": "1.0.14",
+    "description": "Common library for OP_NET.",
     "main": "build/index.js",
     "types": "build/index.d.ts",
     "typings": "build/index.d.ts",
+    "engines": {
+        "node": ">=16.0.0"
+    },
     "exports": {
         ".": {
             "import": "./build/index.js",
@@ -13,6 +16,20 @@
             "types": "./src/index.ts"
         }
     },
+    "homepage": "https://opnet.org",
+    "keywords": [
+        "opnet",
+        "op_net",
+        "opnet common",
+        "bsi",
+        "bsi-binary",
+        "bsi-bitcoin-rpc",
+        "bitcoin",
+        "btc",
+        "bitcoin smart contracts",
+        "smart inscriptions",
+        "ordinals"
+    ],
     "scripts": {
         "watch": "gulp watch",
         "start": "cd build && node index",
@@ -20,6 +37,14 @@
         "test": "jest --runInBand",
         "setup": "npm npm i && npm run build",
         "install": "gulp && gulp cjs"
+    },
+    "publishConfig": {
+        "access": "public",
+        "tag": "latest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/btc-vision/bsi-common.git"
     },
     "author": "BlobMaster41",
     "license": "LICENSE.MD",
@@ -34,28 +59,19 @@
         "typescript-eslint": "^7.4.0"
     },
     "dependencies": {
+        "@btc-vision/logger": "^1.0.2",
         "@jest/types": "^29.6.3",
-        "@types/bignumber.js": "^5.0.0",
         "@types/cors": "^2.8.17",
         "@types/debug": "^4.1.12",
         "@types/jest": "^29.5.12",
-        "@types/mongo-sanitize": "^1.0.3",
         "babel-plugin-transform-import-meta": "^2.2.1",
-        "bignumber.js": "^9.1.2",
-        "bitcoinjs-lib": "^6.1.5",
-        "chalk": "^5.3.0",
-        "cors": "^2.8.5",
-        "ecpair": "^2.1.0",
         "gulp": "^4.0.2",
         "gulp-cached": "^1.1.1",
         "gulp-logger": "^0.0.2",
         "gulp-typescript": "^6.0.0-alpha.1",
         "gulplog": "^2.2.0",
-        "mongo-sanitize": "^1.1.0",
         "mongodb": "^6.5.0",
         "node-cache": "^5.1.2",
-        "supports-color": "^9.4.0",
-        "tiny-secp256k1": "^2.2.3",
         "toml": "^3.0.0",
         "ts-jest": "^29.1.2",
         "ts-node": "^10.9.2"

@@ -16,9 +16,9 @@ import {
 } from 'mongodb';
 import { DataAccessError } from '../../errors/DataAccessError.js';
 import { DataAccessErrorType } from '../../errors/enums/DataAccessErrorType.js';
-import { Logger } from '../../logger/Logger.js';
 import { IBaseDocument } from '../documents/interfaces/IBaseDocument.js';
 import { PagingQueryInfo, PagingQueryResult } from './PagingQuery.js';
+import { Logger } from '@btc-vision/logger';
 
 export abstract class BaseRepository<TDocument extends IBaseDocument> extends Logger {
     protected _db: Db;

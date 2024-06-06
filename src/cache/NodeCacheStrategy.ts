@@ -2,7 +2,7 @@ import NodeCache from 'node-cache';
 import { ICacheStrategy } from './interfaces/ICacheStrategy.js';
 
 export class NodeCacheStrategy<T> implements ICacheStrategy<T> {
-    private maxItems: number = 0;
+    private readonly maxItems: number = 0;
     private cache: NodeCache;
 
     constructor(maxItems: number = 1024) {

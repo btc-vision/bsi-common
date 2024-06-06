@@ -2,15 +2,15 @@ import fs from 'fs';
 import toml from 'toml';
 import { CacheStrategy } from '../cache/enums/CacheStrategy.js';
 import { MONGO_CONNECTION_TYPE } from '../db/credentials/MongoCredentials.js';
-import { DebugLevel } from '../logger/enums/DebugLevel.js';
-import { Logger } from '../logger/Logger.js';
 import { ConfigBase } from './ConfigBase.js';
 import { BitcoinNetwork } from './enums/BitcoinNetwork.js';
 import { IConfig, IConfigBase, IConfigTemplate } from './interfaces/IConfig.js';
 import '../utils/Globals.js';
+import { DebugLevel, Logger } from '@btc-vision/logger';
 
 export abstract class ConfigManager<T extends IConfigTemplate> extends Logger {
     public readonly logColor: string = '#c71585';
+
     protected config: IConfig<T> = this.getDefaultConfig();
 
     protected constructor(fullFileName: string, preload: boolean = true) {
