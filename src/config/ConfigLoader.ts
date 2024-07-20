@@ -51,15 +51,10 @@ export abstract class ConfigManager<T extends IConfigTemplate> extends Logger {
                     PASSWORD: '',
                 },
             },
-            ORDCLIENT: {
-                ORDCLIENT_URL: '',
-            },
-
             DEBUG_LEVEL: DebugLevel.INFO,
             CACHE_STRATEGY: CacheStrategy.NODE_CACHE,
             DEBUG_FILEPATH: './debug.log',
             LOG_FOLDER: '',
-            MRC_DISTRIBUTION_PERIOD: 100,
         };
 
         return config as IConfig<T>;
@@ -181,26 +176,6 @@ export abstract class ConfigManager<T extends IConfigTemplate> extends Logger {
                 throw new Error(`Oops the property LOG_FOLDER is not a string.`);
             }
         }
-
-        if (parsedConfig.MRC_DISTRIBUTION_PERIOD) {
-            if (typeof parsedConfig.MRC_DISTRIBUTION_PERIOD !== 'number') {
-                throw new Error(`Oops the property MRC_DISTRIBUTION_PERIOD is not a number.`);
-            }
-
-            if (parsedConfig.MRC_DISTRIBUTION_PERIOD <= 0) {
-                throw new Error(`Oops the property MRC_DISTRIBUTION_PERIOD must be > 0.`);
-            }
-        }
-
-        if (parsedConfig.ORDCLIENT) {
-            if (typeof parsedConfig.ORDCLIENT.ORDCLIENT_URL !== 'string') {
-                throw new Error(`Oops the property ORDCLIENT.ORDCLIENT_URL is not a string.`);
-            }
-
-            if (!parsedConfig.ORDCLIENT.ORDCLIENT_URL) {
-                throw new Error(`Oops the property ORDCLIENT.ORDCLIENT_URL is not valid.`);
-            }
-        }
     }
 
     protected parsePartialConfig(parsedConfig: Partial<IConfig<T>>): void {
@@ -226,17 +201,10 @@ export abstract class ConfigManager<T extends IConfigTemplate> extends Logger {
             ...parsedConfig.DATABASE,
         };
 
-        this.config.ORDCLIENT = {
-            ...this.config.ORDCLIENT,
-            ...parsedConfig.ORDCLIENT,
-        };
-
         this.config.DEBUG_LEVEL = parsedConfig.DEBUG_LEVEL || this.config.DEBUG_LEVEL;
         this.config.CACHE_STRATEGY = parsedConfig.CACHE_STRATEGY || this.config.CACHE_STRATEGY;
         this.config.DEBUG_FILEPATH = parsedConfig.DEBUG_FILEPATH || this.config.DEBUG_FILEPATH;
         this.config.LOG_FOLDER = parsedConfig.LOG_FOLDER || this.config.LOG_FOLDER;
-        this.config.MRC_DISTRIBUTION_PERIOD =
-            parsedConfig.MRC_DISTRIBUTION_PERIOD || this.config.MRC_DISTRIBUTION_PERIOD;
     }
 
     protected loadConfig(fullFileName: string): void {

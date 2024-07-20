@@ -36,20 +36,14 @@ export interface BlockchainConfig {
     BITCOIND_PASSWORD: string;
 }
 
-export interface ORDClientConfig {
-    ORDCLIENT_URL: string;
-}
-
 export interface IConfigBase extends IConfigTemplate {
     DOCS: DocsConfig;
     API: APIConfig;
 
     DATABASE: DataBaseConfig;
     BLOCKCHAIN: BlockchainConfig;
-    ORDCLIENT: ORDClientConfig;
 
     DEBUG_LEVEL: DebugLevel;
-    MRC_DISTRIBUTION_PERIOD: number;
     DEBUG_FILEPATH: string;
     CACHE_STRATEGY: CacheStrategy;
     LOG_FOLDER: string;
