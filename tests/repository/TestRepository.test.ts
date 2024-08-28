@@ -13,7 +13,7 @@ describe('TestRepository Integration Tests', () => {
     const DBManagerInstance = new ConfigurableDBManager(Config);
 
     beforeAll(async () => {
-        await DBManagerInstance.setup(Config.DATABASE.CONNECTION_TYPE);
+        await DBManagerInstance.setup();
         await DBManagerInstance.connect();
         await DBTestHelper.setupDatabaseForTests(DBManagerInstance.db!,
             `${__dirname}/data/`,
@@ -67,7 +67,7 @@ describe('TestRepository Integration Tests', () => {
             const criteria: Partial<Filter<ITestDocument>> = {
                 ticker: 'BTC'
             };
-            
+
             const documents = await repo.getAll(criteria);
 
             expect(documents.length).toBe(3);
@@ -326,7 +326,7 @@ describe('TestRepository Integration Tests', () => {
 
             await repo.save(criteria,
                 document);
-            
+
             const savedDocument = await repo.queryOne(criteria);
 
             expect(savedDocument).toBeDefined();
@@ -485,7 +485,7 @@ describe('TestRepository Integration Tests', () => {
                     await session.commitTransaction();
 
                     const document = await repo2.queryOne(criteria);
-                    
+
                     expect(document).toBeNull();
                 } finally {
                     session.endSession();

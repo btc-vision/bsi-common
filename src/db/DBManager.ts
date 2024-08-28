@@ -51,7 +51,7 @@ export class ConfigurableDBManager extends InnerDBManager {
         ];
     }
 
-    public async setup(_targetDatabase: string): Promise<boolean> {
+    public async setup(): Promise<boolean> {
         if (this.isSetup) return true;
         this.isSetup = true;
 
