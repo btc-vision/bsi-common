@@ -1,12 +1,7 @@
 import { CacheStrategy } from './cache/enums/CacheStrategy.js';
 import { ICacheStrategy } from './cache/interfaces/ICacheStrategy.js';
 import { NodeCacheStrategy } from './cache/NodeCacheStrategy.js';
-import { BitcoinNetwork } from './config/enums/BitcoinNetwork.js';
-import {
-    MONGO_CONNECTION_TYPE,
-    MongoCredentials,
-    MongoCredentialsDTO,
-} from './db/credentials/MongoCredentials.js';
+import { MongoCredentials, MongoCredentialsDTO } from './db/credentials/MongoCredentials.js';
 import { DBConstants } from './db/DBConstants.js';
 import { ConfigurableDBManager } from './db/DBManager.js';
 import { IBaseDocument } from './db/documents/interfaces/IBaseDocument.js';
@@ -23,7 +18,7 @@ import { Globals } from './utils/Globals.js';
 import { TypeConverter } from './utils/TypeConverter.js';
 
 export { CacheStrategy, ICacheStrategy, NodeCacheStrategy };
-export { MongoCredentials, MONGO_CONNECTION_TYPE, MongoCredentialsDTO, BitcoinNetwork };
+export { MongoCredentials, MongoCredentialsDTO };
 export { DataAccessErrorType, DataAccessError };
 export * from '@btc-vision/logger';
 

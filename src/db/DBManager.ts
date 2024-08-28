@@ -1,13 +1,16 @@
-import { AnyError, ClientSession, ClientSessionOptions, Db, MongoClient, ReadPreference } from 'mongodb';
+import {
+    AnyError,
+    ClientSession,
+    ClientSessionOptions,
+    Db,
+    MongoClient,
+    ReadPreference,
+} from 'mongodb';
 import { IConfig, IConfigBase } from '../config/interfaces/IConfig.js';
 import { DataAccessError } from '../errors/DataAccessError.js';
 import { DataAccessErrorType } from '../errors/enums/DataAccessErrorType.js';
 import { Globals } from '../utils/Globals.js';
-import {
-    MONGO_CONNECTION_TYPE,
-    MongoCredentials,
-    MongoCredentialsDTO,
-} from './credentials/MongoCredentials.js';
+import { MongoCredentials, MongoCredentialsDTO } from './credentials/MongoCredentials.js';
 import { InnerDBManager } from './interfaces/IDBManager.js';
 
 Globals.register();
@@ -25,7 +28,6 @@ export class ConfigurableDBManager extends InnerDBManager {
     private mongo: MongoClient | undefined;
     private isConnecting: boolean = false;
     private databaseName: string = '';
-    private isProduction: boolean = false;
     private connectionUri: string = '';
 
     private isSetup: boolean = false;
@@ -49,15 +51,9 @@ export class ConfigurableDBManager extends InnerDBManager {
         ];
     }
 
-    public async setup(_targetDatabase: string | MONGO_CONNECTION_TYPE): Promise<boolean> {
-        if (!_targetDatabase) {
-            _targetDatabase = this.config.DATABASE.CONNECTION_TYPE;
-        }
-
+    public async setup(_targetDatabase: string): Promise<boolean> {
         if (this.isSetup) return true;
         this.isSetup = true;
-
-        this.isProduction = process.platform === 'win32';
 
         const mongoProductionCredentials = this.#getMongoCredentials();
 
@@ -79,7 +75,7 @@ export class ConfigurableDBManager extends InnerDBManager {
         this.isConnected = false;
     }
 
-    public async connect(): Promise<void> {
+    public async connect(log: boolean = false): Promise<void> {
         if (this.connectionPromise) {
             return this.connectionPromise;
         }
@@ -96,9 +92,7 @@ export class ConfigurableDBManager extends InnerDBManager {
             this.isConnected = false;
 
             const client = await this.mongo.connect().catch((err: AnyError) => {
-                this.error(
-                    `Something went wrong while connecting to mongo database: ${err}. Can not connect to ${this.config.DATABASE.HOST}:${this.config.DATABASE.PORT}/${this.config.DATABASE}`,
-                );
+                this.error(`Something went wrong while connecting to the database -> ${err}`);
 
                 setTimeout(async () => {
                     this.warn(`Attempting mongo auto reconnection.`);
@@ -112,7 +106,7 @@ export class ConfigurableDBManager extends InnerDBManager {
                 return;
             }
 
-            this.success('MongoDB Remote Connection Established.');
+            if (log) this.success('Connected to the database.');
 
             this.client = client;
             this.isConnected = true;
@@ -132,15 +126,15 @@ export class ConfigurableDBManager extends InnerDBManager {
 
         const sessionConfig: ClientSessionOptions = {
             defaultTransactionOptions: {
-                maxCommitTimeMS: 29 * 60000 // max 29 minutes.
-            }
-        }
+                maxCommitTimeMS: 29 * 60000, // max 29 minutes.
+            },
+        };
 
         return this.client.startSession(sessionConfig);
     }
 
     #getMongoCredentials() {
-        const mongoCredentials = new MongoCredentials(<MongoCredentialsDTO>{
+        return new MongoCredentials(<MongoCredentialsDTO>{
             databaseName: this.config.DATABASE.DATABASE_NAME,
 
             username: this.config.DATABASE.AUTH.USERNAME,
@@ -148,10 +142,6 @@ export class ConfigurableDBManager extends InnerDBManager {
 
             host: this.config.DATABASE.HOST,
             port: this.config.DATABASE.PORT.toString(),
-
-            databaseMode: this.config.DATABASE.CONNECTION_TYPE,
         });
-
-        return mongoCredentials;
     }
 }

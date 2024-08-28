@@ -1,8 +1,3 @@
-export enum MONGO_CONNECTION_TYPE {
-    TESTNET = 'TESTNET',
-    PRODUCTION = 'PRODUCTION',
-}
-
 export interface MongoCredentialsDTO {
     readonly username: string;
     readonly password: string;
@@ -13,7 +8,6 @@ export interface MongoCredentialsDTO {
     readonly prefix?: string;
 
     readonly databaseName: string;
-    readonly databaseMode: MONGO_CONNECTION_TYPE;
 }
 
 export class MongoCredentials {
@@ -22,7 +16,6 @@ export class MongoCredentials {
     protected password: string = '';
     protected host: string = '';
     protected port: string = '';
-    protected databaseMode: MONGO_CONNECTION_TYPE;
 
     protected prefix: string = ``;
 
@@ -36,7 +29,6 @@ export class MongoCredentials {
         this.prefix = creds.prefix || '';
 
         this.databaseName = creds.databaseName;
-        this.databaseMode = creds.databaseMode;
     }
 
     public get connectionUri(): string {
