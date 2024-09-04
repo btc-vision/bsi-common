@@ -1,7 +1,7 @@
 {
     "type": "module",
     "name": "@btc-vision/bsi-common",
-    "version": "1.0.18",
+    "version": "1.0.20",
     "description": "Common library for OP_NET.",
     "main": "build/index.js",
     "types": "build/index.d.ts",
@@ -59,7 +59,7 @@
         "typescript-eslint": "^7.4.0"
     },
     "dependencies": {
-        "@btc-vision/logger": "^1.0.2",
+        "@btc-vision/logger": "^1.0.4",
         "@jest/types": "^29.6.3",
         "@types/cors": "^2.8.17",
         "@types/debug": "^4.1.12",
