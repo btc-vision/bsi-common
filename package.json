@@ -1,7 +1,7 @@
 {
-    "type": "module",
     "name": "@btc-vision/bsi-common",
-    "version": "1.0.20",
+    "type": "module",
+    "version": "1.0.21",
     "description": "Common library for OP_NET.",
     "main": "build/index.js",
     "types": "build/index.d.ts",
@@ -12,8 +12,8 @@
     "exports": {
         ".": {
             "import": "./build/index.js",
-            "require": "./cjs/index.js",
-            "types": "./src/index.ts"
+            "require": "./build/index.js",
+            "types": "./build/index.d.ts"
         }
     },
     "homepage": "https://opnet.org",
@@ -35,8 +35,7 @@
         "start": "cd build && node index",
         "build": "gulp",
         "test": "jest --runInBand",
-        "setup": "npm npm i && npm run build",
-        "install": "gulp && gulp cjs"
+        "setup": "npm i && npm run build"
     },
     "publishConfig": {
         "access": "public",
@@ -49,7 +48,9 @@
     "author": "BlobMaster41",
     "license": "LICENSE.MD",
     "devDependencies": {
-        "@babel/preset-env": "^7.24.3",
+        "@babel/preset-env": "^7.25.4",
+        "@babel/preset-react": "^7.24.7",
+        "@babel/preset-typescript": "^7.24.7",
         "@types/json2xls": "^0.0.0",
         "@types/node": "^22.5.5",
         "eslint": "^8.57.0",
