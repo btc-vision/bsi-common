@@ -1,10 +1,10 @@
+import { DebugLevel, Logger } from '@btc-vision/logger';
 import fs from 'fs';
 import toml from 'toml';
 import { CacheStrategy } from '../cache/enums/CacheStrategy.js';
+import '../utils/Globals.js';
 import { ConfigBase } from './ConfigBase.js';
 import { IConfig, IConfigBase, IConfigTemplate } from './interfaces/IConfig.js';
-import '../utils/Globals.js';
-import { DebugLevel, Logger } from '@btc-vision/logger';
 
 export abstract class ConfigManager<T extends IConfigTemplate> extends Logger {
     public readonly logColor: string = '#c71585';
@@ -123,7 +123,7 @@ export abstract class ConfigManager<T extends IConfigTemplate> extends Logger {
         }
 
         try {
-            const parsedConfig: Partial<IConfig<T>> = toml.parse(config);
+            const parsedConfig: Partial<IConfig<T>> = toml.parse(config) as Partial<IConfig<T>>;
 
             this.parsePartialConfig(parsedConfig);
         } catch (e: unknown) {

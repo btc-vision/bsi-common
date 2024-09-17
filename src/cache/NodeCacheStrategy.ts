@@ -14,7 +14,7 @@ export class NodeCacheStrategy<T> implements ICacheStrategy<T> {
         return this.cache.get(key);
     }
 
-    public async set(key: string, value: T, ttl: number = 0): Promise<boolean> {
+    public set(key: string, value: T, ttl: number = 0): boolean {
         if (this.cache.keys().length > this.maxItems) {
             const firstKey = this.cache.keys()[0];
             this.cache.del(firstKey);

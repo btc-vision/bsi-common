@@ -1,6 +1,6 @@
+import { Logger } from '@btc-vision/logger';
 import {
     AnyBulkWriteOperation,
-    BulkOperationBase,
     BulkWriteOptions,
     BulkWriteResult,
     ClientSession,
@@ -18,7 +18,6 @@ import { DataAccessError } from '../../errors/DataAccessError.js';
 import { DataAccessErrorType } from '../../errors/enums/DataAccessErrorType.js';
 import { IBaseDocument } from '../documents/interfaces/IBaseDocument.js';
 import { PagingQueryInfo, PagingQueryResult } from './PagingQuery.js';
-import { Logger } from '@btc-vision/logger';
 
 export abstract class BaseRepository<TDocument extends IBaseDocument> extends Logger {
     protected _db: Db;
@@ -157,7 +156,7 @@ export abstract class BaseRepository<TDocument extends IBaseDocument> extends Lo
         try {
             const collection = this.getCollection();
             const skips = pagingQueryInfo.pageSize * (pagingQueryInfo.pageNumber - 1);
-            let count: number = await this.getCount(criteria);
+            const count: number = await this.getCount(criteria);
             const options: FindOptions = this.getOptions(currentSession);
 
             const documents = await collection
