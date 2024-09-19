@@ -1,12 +1,12 @@
+import { Logger } from '@btc-vision/logger';
 import { ClientSession } from 'mongodb';
 import { IConfig, IConfigBase } from '../../config/interfaces/IConfig.js';
-import { Logger } from '@btc-vision/logger';
 
 export interface IDBManager {
     connect: () => Promise<void>;
-    setup: (targetDatabase: string) => Promise<boolean>;
+    setup: (targetDatabase: string) => boolean;
     close: () => Promise<void>;
-    startSession: () => Promise<ClientSession>;
+    startSession: () => ClientSession;
 }
 
 export abstract class InnerDBManager extends Logger implements IDBManager {
@@ -19,9 +19,9 @@ export abstract class InnerDBManager extends Logger implements IDBManager {
 
     public abstract connect(): Promise<void>;
 
-    public abstract setup(targetDatabase: string): Promise<boolean>;
+    public abstract setup(targetDatabase: string): boolean;
 
     public abstract close(): Promise<void>;
 
-    public abstract startSession(): Promise<ClientSession>;
+    public abstract startSession(): ClientSession;
 }

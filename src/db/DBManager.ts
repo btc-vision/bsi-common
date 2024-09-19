@@ -1,12 +1,4 @@
-import {
-    AnyError,
-    ClientSession,
-    ClientSessionOptions,
-    Db,
-    MongoClient,
-    ReadPreference,
-} from 'mongodb';
-import { IConfig, IConfigBase } from '../config/interfaces/IConfig.js';
+import { ClientSession, ClientSessionOptions, Db, MongoClient, ReadPreference } from 'mongodb';
 import { DataAccessError } from '../errors/DataAccessError.js';
 import { DataAccessErrorType } from '../errors/enums/DataAccessErrorType.js';
 import { Globals } from '../utils/Globals.js';
@@ -15,7 +7,7 @@ import { InnerDBManager } from './interfaces/IDBManager.js';
 
 Globals.register();
 
-// @ts-ignore
+// @ts-expect-error - This is a polyfill for BigInt JSON serialization.
 BigInt.prototype.toJSON = function () {
     return this.toString();
 };
@@ -32,15 +24,11 @@ export class ConfigurableDBManager extends InnerDBManager {
 
     private isSetup: boolean = false;
 
-    private readonly mongoOpts: any = {
+    private readonly mongoOpts: Record<string, string> = {
         readPreference: ReadPreference.PRIMARY_PREFERRED,
     };
 
     private connectionPromise: Promise<void> | null = null;
-
-    constructor(config: IConfig<IConfigBase>) {
-        super(config);
-    }
 
     public createNewMongoClient(): [MongoClient, string] {
         const mongoCredentials = this.#getMongoCredentials();
@@ -51,7 +39,7 @@ export class ConfigurableDBManager extends InnerDBManager {
         ];
     }
 
-    public async setup(): Promise<boolean> {
+    public setup(): boolean {
         if (this.isSetup) return true;
         this.isSetup = true;
 
@@ -68,7 +56,7 @@ export class ConfigurableDBManager extends InnerDBManager {
     }
 
     public async close(): Promise<void> {
-        this.client?.close();
+        await this.client?.close();
         this.db = null;
         delete this.client;
         this.connectionPromise = null;
@@ -91,7 +79,7 @@ export class ConfigurableDBManager extends InnerDBManager {
 
             this.isConnected = false;
 
-            const client = await this.mongo.connect().catch((err: AnyError) => {
+            const client = await this.mongo.connect().catch((err: unknown) => {
                 this.error(`Something went wrong while connecting to the database -> ${err}`);
 
                 setTimeout(async () => {
@@ -119,7 +107,7 @@ export class ConfigurableDBManager extends InnerDBManager {
         return this.connectionPromise;
     }
 
-    public async startSession(): Promise<ClientSession> {
+    public startSession(): ClientSession {
         if (!this.client) {
             throw new DataAccessError('Client not connected.', DataAccessErrorType.Unknown, '');
         }

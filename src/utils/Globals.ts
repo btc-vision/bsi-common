@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-expect-error - This is a polyfill for BigInt JSON serialization.
 BigInt.prototype.toJSON = function () {
     return this.toString();
 };
@@ -17,12 +17,16 @@ export class Globals {
             console.log('Thread Caught exception: ', err.stack);
         });
 
-        process.emitWarning = (warning: string, ...args: any[]) => {
-            if (args[0] === 'ExperimentalWarning') {
+        process.emitWarning = (warning: string, ...args: unknown[]) => {
+            if (typeof args[0] === 'string' && args[0] === 'ExperimentalWarning') {
                 return;
             }
 
-            if (args[0] && typeof args[0] === 'object' && args[0].type === 'ExperimentalWarning') {
+            if (
+                typeof args[0] === 'object' &&
+                args[0] !== null &&
+                (args[0] as { type?: string }).type === 'ExperimentalWarning'
+            ) {
                 return;
             } else {
                 console.log(warning);
