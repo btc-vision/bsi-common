@@ -1,7 +1,7 @@
 {
     "name": "@btc-vision/bsi-common",
     "type": "module",
-    "version": "1.0.21",
+    "version": "1.0.22",
     "description": "Common library for OP_NET.",
     "main": "build/index.js",
     "types": "build/index.d.ts",

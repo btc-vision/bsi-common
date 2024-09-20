@@ -4,6 +4,7 @@ import { DataAccessErrorType } from '../errors/enums/DataAccessErrorType.js';
 import { Globals } from '../utils/Globals.js';
 import { MongoCredentials, MongoCredentialsDTO } from './credentials/MongoCredentials.js';
 import { InnerDBManager } from './interfaces/IDBManager.js';
+import { IConfig, IConfigBase } from '../config/interfaces/IConfig';
 
 Globals.register();
 
@@ -23,6 +24,10 @@ export class ConfigurableDBManager extends InnerDBManager {
     private connectionUri: string = '';
 
     private isSetup: boolean = false;
+
+    public constructor(config: IConfig<IConfigBase>) {
+        super(config);
+    }
 
     private readonly mongoOpts: Record<string, string> = {
         readPreference: ReadPreference.PRIMARY_PREFERRED,
