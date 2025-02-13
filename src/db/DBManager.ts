@@ -1,4 +1,4 @@
-import { ClientSession, ClientSessionOptions, Db, MongoClient, ReadPreference } from 'mongodb';
+import { ClientSession, ClientSessionOptions, Db, MongoClient, MongoClientOptions, ReadPreference } from 'mongodb';
 import { DataAccessError } from '../errors/DataAccessError.js';
 import { DataAccessErrorType } from '../errors/enums/DataAccessErrorType.js';
 import { Globals } from '../utils/Globals.js';
@@ -29,8 +29,11 @@ export class ConfigurableDBManager extends InnerDBManager {
         super(config);
     }
 
-    private readonly mongoOpts: Record<string, string> = {
+    private readonly mongoOpts: MongoClientOptions = {
         readPreference: ReadPreference.PRIMARY_PREFERRED,
+        directConnection: true,
+        connectTimeoutMS: 10000,
+        appName: `OPNet`
     };
 
     private connectionPromise: Promise<void> | null = null;
