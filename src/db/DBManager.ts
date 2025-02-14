@@ -32,7 +32,6 @@ export class ConfigurableDBManager extends InnerDBManager {
     private readonly mongoOpts: MongoClientOptions = {
         readPreference: ReadPreference.PRIMARY_PREFERRED,
         directConnection: true,
-        loadBalanced: true,
         connectTimeoutMS: 30000,
         appName: `OPNet`
     };
