@@ -1,4 +1,11 @@
-import { ClientSession, ClientSessionOptions, Db, MongoClient, MongoClientOptions, ReadPreference } from 'mongodb';
+import {
+    ClientSession,
+    ClientSessionOptions,
+    Db,
+    MongoClient,
+    MongoClientOptions,
+    ReadPreference,
+} from 'mongodb';
 import { DataAccessError } from '../errors/DataAccessError.js';
 import { DataAccessErrorType } from '../errors/enums/DataAccessErrorType.js';
 import { Globals } from '../utils/Globals.js';
@@ -24,19 +31,20 @@ export class ConfigurableDBManager extends InnerDBManager {
     private connectionUri: string = '';
 
     private isSetup: boolean = false;
+    private connectionPromise: Promise<void> | null = null;
 
-    public constructor(config: IConfig<IConfigBase>) {
+    public constructor(
+        config: IConfig<IConfigBase>,
+        private readonly mongoOpts: MongoClientOptions = {
+            readPreference: ReadPreference.PRIMARY_PREFERRED,
+            directConnection: true,
+            connectTimeoutMS: 30000,
+            socketTimeoutMS: 30000,
+            appName: `OPNet`,
+        },
+    ) {
         super(config);
     }
-
-    private readonly mongoOpts: MongoClientOptions = {
-        readPreference: ReadPreference.PRIMARY_PREFERRED,
-        directConnection: true,
-        connectTimeoutMS: 30000,
-        appName: `OPNet`
-    };
-
-    private connectionPromise: Promise<void> | null = null;
 
     public createNewMongoClient(): [MongoClient, string] {
         const mongoCredentials = this.#getMongoCredentials();
@@ -123,6 +131,7 @@ export class ConfigurableDBManager extends InnerDBManager {
         const sessionConfig: ClientSessionOptions = {
             defaultTransactionOptions: {
                 maxCommitTimeMS: 29 * 60000, // max 29 minutes.
+                maxTimeMS: 29 * 60000, // max 29 minutes.
             },
         };
 
