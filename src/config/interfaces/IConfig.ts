@@ -1,4 +1,3 @@
-import { CacheStrategy } from '../../cache/enums/CacheStrategy.js';
 import { DebugLevel } from '@btc-vision/logger';
 
 export interface DataBaseConfig {
@@ -15,8 +14,6 @@ export interface DataBaseConfig {
 
 export interface IConfigBase extends IConfigTemplate {
     DEBUG_LEVEL: DebugLevel;
-    DEBUG_FILEPATH: string;
-    CACHE_STRATEGY: CacheStrategy;
     LOG_FOLDER: string;
     DATABASE: DataBaseConfig;
 }

@@ -1,5 +1,5 @@
 import 'jest';
-import { TestRepositoryWithId } from './repositories/TestRepositoryWithId.js'
+import { TestRepositoryWithId } from './repositories/TestRepositoryWithId.js';
 import { Filter, ObjectId } from 'mongodb';
 import { ConfigurableDBManager } from '../../src/db/DBManager.js';
 import { ITestDocumentWithId } from './documents/interfaces/ITestDocumentWithId.js';
@@ -13,13 +13,15 @@ describe('TestRepositoryWithId Integration Tests', () => {
     const DBManagerInstance = new ConfigurableDBManager(Config);
 
     beforeAll(async () => {
-        await DBManagerInstance.setup(Config.DATABASE.CONNECTION_TYPE);
+        //await DBManagerInstance.setup(Config.DATABASE.CONNECTION_TYPE);
         await DBManagerInstance.connect();
-        await DBTestHelper.setupDatabaseForTests(DBManagerInstance.db!,
+        await DBTestHelper.setupDatabaseForTests(
+            DBManagerInstance.db!,
             `${__dirname}/data/`,
-            'TestsWithId');
+            'TestsWithId',
+        );
         process.env = {
-            TEST_JS: '1'
+            TEST_JS: '1',
         };
     }, 20000);
 
@@ -228,11 +230,10 @@ describe('TestRepositoryWithId Integration Tests', () => {
                     stake: TypeConverter.numberToDecimal128(4444),
                 };
 
-                await expect(repo.updatePartialById(document._id, 0, updateDocument)).rejects.toThrow(
-                    DataAccessError,
-                );
+                await expect(
+                    repo.updatePartialById(document._id, 0, updateDocument),
+                ).rejects.toThrow(DataAccessError);
             }
         });
     });
 });
-

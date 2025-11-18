@@ -1,7 +1,7 @@
 // @ts-check
 
-import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
+import eslint from '@eslint/js';
 
 export default tseslint.config(
     eslint.configs.recommended,
@@ -9,7 +9,6 @@ export default tseslint.config(
     {
         languageOptions: {
             parserOptions: {
-                project: './tsconfig.json',
                 projectService: true,
                 tsconfigDirName: import.meta.dirname,
             },
@@ -30,6 +29,12 @@ export default tseslint.config(
             '@typescript-eslint/no-duplicate-enum-values': 'off',
             'prefer-spread': 'off',
             '@typescript-eslint/no-empty-object-type': 'off',
+            '@typescript-eslint/related-getter-setter-pairs': 'off',
+            'max-depth': ['error', 8],
+            '@typescript-eslint/require-await': 'warn',
+            '@typescript-eslint/no-unnecessary-type-arguments': 'off',
+            'no-debugger': 'off',
+            '@typescript-eslint/no-unnecessary-type-conversion': 'warn',
         },
     },
     {

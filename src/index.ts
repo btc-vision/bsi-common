@@ -1,6 +1,3 @@
-import { CacheStrategy } from './cache/enums/CacheStrategy.js';
-import { ICacheStrategy } from './cache/interfaces/ICacheStrategy.js';
-import { NodeCacheStrategy } from './cache/NodeCacheStrategy.js';
 import { MongoCredentials, MongoCredentialsDTO } from './db/credentials/MongoCredentials.js';
 import { DBConstants } from './db/DBConstants.js';
 import { ConfigurableDBManager } from './db/DBManager.js';
@@ -17,10 +14,10 @@ import { DataAccessErrorType } from './errors/enums/DataAccessErrorType.js';
 import { Globals } from './utils/Globals.js';
 import { TypeConverter } from './utils/TypeConverter.js';
 
-export { CacheStrategy, ICacheStrategy, NodeCacheStrategy };
 export { MongoCredentials, MongoCredentialsDTO };
 export { DataAccessErrorType, DataAccessError };
 export * from '@btc-vision/logger';
+export * from './db/convertion/DataConverter.js';
 
 export { Globals, TypeConverter };
 export { IBaseDocument, IBaseDocumentWithId, IDBManager, BaseModel, BaseModelWithId };

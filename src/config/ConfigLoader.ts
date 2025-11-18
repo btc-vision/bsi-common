@@ -1,7 +1,6 @@
 import { DebugLevel, Logger } from '@btc-vision/logger';
 import fs from 'fs';
 import toml from 'toml';
-import { CacheStrategy } from '../cache/enums/CacheStrategy.js';
 import '../utils/Globals.js';
 import { ConfigBase } from './ConfigBase.js';
 import { IConfig, IConfigBase, IConfigTemplate } from './interfaces/IConfig.js';
@@ -22,8 +21,6 @@ export abstract class ConfigManager<T extends IConfigTemplate> extends Logger {
     protected getDefaultConfig(): IConfig<T> {
         const config: IConfigBase = {
             DEBUG_LEVEL: DebugLevel.INFO,
-            CACHE_STRATEGY: CacheStrategy.NODE_CACHE,
-            DEBUG_FILEPATH: './debug.log',
             LOG_FOLDER: '',
 
             DATABASE: {
@@ -45,26 +42,6 @@ export abstract class ConfigManager<T extends IConfigTemplate> extends Logger {
         if (parsedConfig.DEBUG_LEVEL) {
             if (typeof parsedConfig.DEBUG_LEVEL !== 'number') {
                 throw new Error(`Oops the property DEBUG_LEVEL is not a number.`);
-            }
-        }
-
-        if (parsedConfig.CACHE_STRATEGY) {
-            if (typeof parsedConfig.CACHE_STRATEGY !== 'number') {
-                throw new Error(
-                    `Oops the property CACHE_STRATEGY is not a valid CacheStrategy enum value.`,
-                );
-            }
-
-            if (parsedConfig.CACHE_STRATEGY !== CacheStrategy.NODE_CACHE) {
-                throw new Error(
-                    `Oops the property CACHE_STRATEGY is not a valid CacheStrategy enum value.`,
-                );
-            }
-        }
-
-        if (parsedConfig.DEBUG_FILEPATH) {
-            if (typeof parsedConfig.DEBUG_FILEPATH !== 'string') {
-                throw new Error(`Oops the property DEBUG_FILEPATH is not a string.`);
             }
         }
 
@@ -108,8 +85,6 @@ export abstract class ConfigManager<T extends IConfigTemplate> extends Logger {
         };
 
         this.config.DEBUG_LEVEL = parsedConfig.DEBUG_LEVEL || this.config.DEBUG_LEVEL;
-        this.config.CACHE_STRATEGY = parsedConfig.CACHE_STRATEGY || this.config.CACHE_STRATEGY;
-        this.config.DEBUG_FILEPATH = parsedConfig.DEBUG_FILEPATH || this.config.DEBUG_FILEPATH;
         this.config.LOG_FOLDER = parsedConfig.LOG_FOLDER || this.config.LOG_FOLDER;
     }
 
@@ -127,7 +102,6 @@ export abstract class ConfigManager<T extends IConfigTemplate> extends Logger {
 
             this.parsePartialConfig(parsedConfig);
         } catch (e: unknown) {
-            console.log(e);
             const error: Error = e as Error;
 
             this.error(`Failed to load config file. {Details: ${error.stack}}`);
